@@ -1,0 +1,4 @@
+Logos hier ablegen, am besten als SVG (sonst PNG mit transparentem Hintergrund):
+porsche.svg, polestar.svg, vitamin-well.svg, hockenheimring.svg, unme.svg
+Die Logos werden automatisch einheitlich schwarz angezeigt und beim Drüberfahren in Originalfarbe.
+Fehlt eine Datei, steht dort der Name als Text.

@@ -1,0 +1,589 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LLK Management – Influencer Marketing</title>
+<meta name="description" content="LLK Management bringt Marken mit Creatorn zusammen, denen ihre Community wirklich zuhört.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preload" href="fonts/archivo.woff" as="font" type="font/woff" crossorigin>
+<style>
+@font-face{font-family:'Archivo';src:url('fonts/archivo.woff') format('woff');font-weight:100 900;font-stretch:62% 125%;font-display:swap}
+@font-face{font-family:'Geist';src:url('fonts/geist.woff2') format('woff2');font-weight:100 900;font-display:swap}
+@font-face{font-family:'Geist Mono';src:url('fonts/geist-mono.woff2') format('woff2');font-weight:100 900;font-display:swap}
+</style>
+<style>
+.media{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+html{scroll-behavior:smooth}
+:target{scroll-margin-top:84px}
+body{margin:0;background:#F4F4F1}
+a{color:#0D0D0D}a:hover{color:#5A5A55}
+*{box-sizing:border-box}
+.llk{font-family:'Geist',system-ui,sans-serif;color:#0D0D0D;-webkit-font-smoothing:antialiased}
+.disp{font-family:'Archivo',system-ui,sans-serif;font-stretch:125%;font-weight:800;letter-spacing:-0.035em;line-height:0.92}
+.mono{font-family:'Geist Mono',ui-monospace,monospace;font-size:12px;letter-spacing:0.08em;text-transform:uppercase}
+.wrap{max-width:1280px;margin:0 auto;padding-left:clamp(20px,5vw,64px);padding-right:clamp(20px,5vw,64px)}
+.navlink{text-decoration:none;font-size:15px;color:#0D0D0D;padding:10px 4px;position:relative}
+.navlink::after{content:"";position:absolute;left:4px;right:4px;bottom:4px;height:1.5px;background:currentColor;transform:scaleX(0);transform-origin:left;transition:transform .35s cubic-bezier(.2,.7,.2,1)}
+.navlink:hover::after{transform:scaleX(1)}
+.btn{white-space:nowrap;display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:0 22px;border-radius:999px;font-size:15px;font-weight:600;text-decoration:none;transition:transform .25s cubic-bezier(.2,.7,.2,1),background-color .25s,color .25s}
+.btn:hover{transform:translateY(-2px)}
+.btn svg{transition:transform .25s cubic-bezier(.2,.7,.2,1)}
+.btn:hover svg{transform:translateX(4px)}
+.btn-dark{background:#0D0D0D;color:#F4F4F1}.btn-dark:hover{color:#F4F4F1;background:#262624}
+.btn-line{border:1.5px solid #0D0D0D;color:#0D0D0D}.btn-line:hover{background:#0D0D0D;color:#F4F4F1}
+.btn-accent{background:var(--accent);color:#0D0D0D}.btn-accent:hover{color:#0D0D0D}
+.btn-ghost{border:1.5px solid #F4F4F1;color:#F4F4F1}.btn-ghost:hover{background:#F4F4F1;color:#0D0D0D}
+
+/* ---------- Keyframes ---------- */
+@keyframes rise{from{transform:translateY(110%)}to{transform:translateY(0)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+@keyframes navDown{from{opacity:0;transform:translateY(-100%)}to{opacity:1;transform:none}}
+@keyframes curtainUp{from{clip-path:inset(0 0 0 0)}to{clip-path:inset(0 0 100% 0);visibility:hidden}}
+@keyframes barGrow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes marqueeR{from{transform:translateX(-50%)}to{transform:translateX(0)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@keyframes flyIn{
+  from{opacity:0;transform:translate(-50%,130%) rotate(0deg) scale(var(--s))}
+  to{opacity:1;transform:translate(calc(-50% + var(--x)),0) rotate(var(--rot)) scale(var(--s))}
+}
+@keyframes pop{0%{opacity:0;transform:scale(.4)}60%{opacity:1;transform:scale(1.08)}100%{opacity:1;transform:scale(1)}}
+@keyframes heart{0%{opacity:0;transform:translate(0,0) scale(.5)}15%{opacity:1}100%{opacity:0;transform:translate(var(--dx),-200px) scale(1.15)}}
+@keyframes rot{0%,28%{transform:translateY(0)}33%,61%{transform:translateY(-1em)}66%,94%{transform:translateY(-2em)}100%{transform:translateY(-3em)}}
+@keyframes pulse{0%,100%{opacity:.35;transform:scale(1)}50%{opacity:.6;transform:scale(1.12)}}
+@keyframes ping{0%{box-shadow:0 0 0 0 var(--accent)}100%{box-shadow:0 0 0 10px transparent}}
+@keyframes prog{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes ink{from{color:#C9C9C2}to{color:inherit}}
+
+/* ---------- Hero ---------- */
+.navin{animation:navDown .8s cubic-bezier(.2,.7,.2,1) .15s both}
+.line{display:block;overflow:hidden;padding-bottom:0.05em}
+.line > span{display:block;animation:rise 1.05s cubic-bezier(.2,.7,.2,1) both}
+.d1 > span{animation-delay:.1s}.d2 > span{animation-delay:.22s}.d3 > span{animation-delay:.34s}
+.rot{display:block;height:1em;overflow:hidden}
+.rot-in{display:block;animation:rot 9s cubic-bezier(.7,0,.2,1) 1.6s infinite}
+.rot-in > span{display:block;height:1em;line-height:1em;white-space:nowrap}
+.f2{animation:fadeUp .9s cubic-bezier(.2,.7,.2,1) .55s both}
+.f3{animation:fadeUp .9s cubic-bezier(.2,.7,.2,1) .7s both}
+.phone{position:absolute;left:50%;top:30px;width:236px;height:480px;animation:flyIn 1.25s cubic-bezier(.2,.8,.2,1) both}
+.ph1{--x:-128px;--rot:-9deg;--s:.86;z-index:1;animation-delay:.25s}
+.ph2{--x:0px;--rot:0deg;--s:1;z-index:3;animation-delay:.37s}
+.ph3{--x:128px;--rot:9deg;--s:.86;z-index:2;animation-delay:.49s}
+.phone-in{width:100%;height:100%;border-radius:30px;overflow:hidden;position:relative;box-shadow:0 40px 80px -36px rgba(13,13,13,.65);border:6px solid #0D0D0D;animation:float 6s ease-in-out infinite}
+.ph1 .phone-in{animation-delay:-2s}.ph3 .phone-in{animation-delay:-4s}
+.glow{position:absolute;left:50%;top:50%;width:360px;height:360px;margin:-180px 0 0 -180px;border-radius:50%;background:var(--accent);filter:blur(70px);animation:pulse 5s ease-in-out infinite}
+.rec{animation:blink 1.2s steps(1) infinite}
+.prog{transform-origin:left;animation:prog 7s linear infinite}
+.hrt{position:absolute;right:22px;bottom:150px;color:var(--accent);opacity:0;animation:heart 3.2s ease-out infinite}
+.chip{position:absolute;z-index:4;animation:pop .7s cubic-bezier(.2,.8,.2,1.2) both}
+.chip > div{animation:float 7s ease-in-out infinite}
+.dotping{width:9px;height:9px;border-radius:50%;background:var(--accent);animation:ping 1.6s ease-out infinite}
+
+/* ---------- Bänder ---------- */
+.track{display:flex;width:max-content;animation:marquee 34s linear infinite}
+.track-r{display:flex;width:max-content;animation:marqueeR 38s linear infinite}
+
+/* ---------- Statement ---------- */
+.w{display:inline-block;margin-right:.24em}
+.w-acc{color:var(--accent)}
+
+/* ---------- Leistungen ---------- */
+.panel{border-radius:28px;padding:clamp(28px,4vw,48px);display:flex;flex-direction:column;gap:28px}
+.row{display:flex;align-items:center;gap:20px;padding:20px 0;border-top:1px solid var(--rule);transition:padding .35s cubic-bezier(.2,.7,.2,1)}
+.row:hover{padding-left:14px}
+.row .ra{margin-left:auto;opacity:0;transform:translateX(-10px);transition:opacity .3s,transform .35s cubic-bezier(.2,.7,.2,1);flex-shrink:0}
+.row:hover .ra{opacity:1;transform:none}
+
+/* ---------- Creator ---------- */
+.cc{display:block;text-decoration:none;color:#0D0D0D}
+.cc:hover{color:#0D0D0D}
+.cc-media{position:relative;aspect-ratio:3 / 4;border-radius:24px;overflow:hidden}
+.cc-img{position:absolute;inset:0;display:grid;place-items:center;transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.cc:hover .cc-img{transform:scale(1.07)}
+.cc-over{position:absolute;left:0;right:0;bottom:0;padding:22px 24px;background:#0D0D0D;color:#F4F4F1;display:flex;justify-content:space-between;align-items:center;transform:translateY(101%);transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.cc:hover .cc-over{transform:none}
+@media (min-width: 900px){.cc-mid{margin-top:88px}}
+
+/* ---------- Marken ---------- */
+.logorow{border-top:1px solid #DADAD4;border-bottom:1px solid #DADAD4;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)}
+.logorow:hover .track{animation-play-state:paused}
+.logo{flex-shrink:0;width:clamp(180px,18vw,260px);height:132px;display:grid;place-items:center;border-right:1px solid #DADAD4;padding:0 28px}
+.logo img{max-width:100%;max-height:44px;object-fit:contain;filter:brightness(0);opacity:.72;transition:filter .35s,opacity .35s,transform .35s cubic-bezier(.2,.7,.2,1)}
+.logo:hover img{filter:none;opacity:1;transform:scale(1.06)}
+.lname{font-weight:600;font-size:20px;letter-spacing:-0.01em;color:#0D0D0D;opacity:.72;white-space:nowrap;transition:opacity .3s,color .3s}
+.logo:hover .lname{opacity:1;color:var(--accent)}
+.has-logo .lname{display:none}
+
+/* ---------- Mehr ---------- */
+.card{transition:transform .45s cubic-bezier(.2,.7,.2,1),box-shadow .45s}
+.card:hover{transform:translateY(-6px);box-shadow:0 28px 56px -28px rgba(13,13,13,.4)}
+.spin{animation:spin 16s linear infinite}
+
+/* ---------- Scroll-Animationen ---------- */
+.draw{transform-origin:left}
+@supports (animation-timeline: view()){
+  .reveal{animation:fadeUp linear both;animation-timeline:view();animation-range:entry 5% entry 75%}
+  .w{animation:ink linear both;animation-timeline:view();animation-range:cover 18% cover 42%}
+  .w-acc{animation-name:inkAcc}
+  @keyframes inkAcc{from{color:#C9C9C2}to{color:var(--accent)}}
+  .draw{animation:barGrow linear both;animation-timeline:view();animation-range:entry 20% cover 50%}
+  .big{animation:fadeUp linear both;animation-timeline:view();animation-range:entry 0% cover 35%}
+}
+
+@media (prefers-reduced-motion: reduce){
+  .navin,.line > span,.rot-in,.f1,.f2,.f3,.phone,.phone-in,.glow,.rec,.prog,.hrt,.chip,.chip > div,.dotping,.track,.track-r,.reveal,.w,.draw,.big,.spin,.cl,.csub,.cbar > div{animation:none !important}
+  .phone{transform:translate(calc(-50% + var(--x)),0) rotate(var(--rot)) scale(var(--s))}
+  .hrt{display:none}
+}
+@media (max-width: 860px){
+  .hide-m{display:none !important}
+  .navbar{flex-wrap:nowrap !important}
+}
+@media (max-width: 480px){
+  .hide-xs{display:none !important}
+}
+</style>
+</head>
+<body>
+<div class="llk" style="--accent: #FF4F1F; background: #F4F4F1; min-height: 100vh; overflow-x: hidden">
+
+  <!-- Navigation -->
+  <header class="navin" style="position: sticky; top: 0; z-index: 20; background: rgba(244,244,241,0.92); border-bottom: 1px solid #DADAD4">
+    <nav class="wrap navbar" style="display: flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 72px; flex-wrap: wrap">
+      <a href="#top" aria-label="LLK Management" style="text-decoration: none; display: flex; align-items: center; gap: 12px">
+        <span class="disp" style="font-size: 28px; letter-spacing: -0.06em; line-height: 0.8">LLK</span>
+        <span style="width: 2px; height: 24px; background: var(--accent)"></span>
+        <span class="mono" style="font-size: 11px; font-weight: 500; letter-spacing: 0.32em; color: #0D0D0D">Management</span>
+      </a>
+      <div class="hide-m" style="display: flex; gap: 28px; align-items: center">
+        <a class="navlink" href="#leistungen">Leistungen</a>
+        <a class="navlink" href="#creator">Creator</a>
+        <a class="navlink" href="#marken">Referenzen</a>
+        <a class="navlink" href="#mehr">Media &amp; App</a>
+      </div>
+      <a class="btn btn-dark hide-xs" href="#kontakt" style="min-height: 44px; font-size: 14px">Kampagne anfragen</a>
+    </nav>
+  </header>
+
+  <!-- Hero -->
+  <section id="top" class="wrap" style="padding-top: clamp(48px, 7vw, 96px); padding-bottom: 88px; display: flex; flex-wrap: wrap; gap: 48px; align-items: center">
+    <div style="flex: 999 1 600px; min-width: 0">
+      <h1 class="disp" style="margin: 0; font-size: clamp(46px, 6.4vw, 96px)">
+        <span class="line d1"><span>Influencer</span></span>
+        <span class="line d2"><span>Marketing,</span></span>
+        <span class="line d3"><span style="color: var(--accent)">
+          <span class="rot"><span class="rot-in"><span>das wirkt.</span><span>das bleibt.</span><span>das zieht.</span><span>das wirkt.</span></span></span>
+        </span></span>
+      </h1>
+      <p class="f2" style="margin: 34px 0 0; font-size: clamp(18px, 1.5vw, 21px); line-height: 1.5; max-width: 540px; color: #2B2B28">
+        Wir bringen Marken mit Creatorn zusammen, denen ihre Community wirklich zuhört – und machen daraus Kampagnen, die man nicht einfach wegscrollt.
+      </p>
+      <div class="f3" style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 38px">
+        <a class="btn btn-dark" href="#kontakt">Kampagne anfragen
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg>
+        </a>
+        <a class="btn btn-line" href="#kontakt">Creator werden</a>
+      </div>
+    </div>
+
+    <!-- Hero-Visual: drei Clips im Fächer -->
+    <div style="flex: 1 1 400px; position: relative; height: 560px; min-width: 0" aria-hidden="true">
+      <div class="glow"></div>
+
+      <div class="phone ph1"><div class="phone-in" style="background: linear-gradient(160deg, #2A2A28, #121211)">
+        <div style="position: absolute; inset: 0; display: grid; place-items: center"><span class="mono" style="font-size: 10px; color: #6B6B66">[Clip Creator 1]</span></div>
+        <video class="media" src="videos/clip-1.mp4" autoplay muted loop playsinline onerror="this.remove()"></video>
+        <div style="position: absolute; left: 16px; bottom: 18px; color: #F4F4F1; font-size: 12px; font-weight: 600">@[creator1]</div>
+      </div></div>
+
+      <div class="phone ph3"><div class="phone-in" style="background: linear-gradient(160deg, #3A3A37, #161615)">
+        <div style="position: absolute; inset: 0; display: grid; place-items: center"><span class="mono" style="font-size: 10px; color: #6B6B66">[Clip Creator 3]</span></div>
+        <video class="media" src="videos/clip-3.mp4" autoplay muted loop playsinline onerror="this.remove()"></video>
+        <div style="position: absolute; left: 16px; bottom: 18px; color: #F4F4F1; font-size: 12px; font-weight: 600">@[creator3]</div>
+      </div></div>
+
+      <div class="phone ph2"><div class="phone-in" style="background: linear-gradient(170deg, #1C1C1A, #0D0D0D)">
+        <div style="position: absolute; inset: 0; display: grid; place-items: center"><span class="mono" style="font-size: 10px; color: #6B6B66">[Clip Creator 2]</span></div>
+        <video class="media" src="videos/clip-2.mp4" autoplay muted loop playsinline onerror="this.remove()"></video>
+        <div style="position: absolute; top: 16px; left: 16px; right: 16px; display: flex; justify-content: space-between; align-items: center; color: #F4F4F1">
+          <span class="mono" style="display: inline-flex; align-items: center; gap: 7px; font-size: 10px"><span class="rec" style="width: 8px; height: 8px; border-radius: 50%; background: var(--accent)"></span>Live</span>
+          <span class="mono" style="font-size: 10px; color: #B5B5AE">9:16</span>
+        </div>
+        <div style="position: absolute; right: 14px; bottom: 92px; display: flex; flex-direction: column; gap: 18px; color: #F4F4F1">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.8 4.5c2.1 0 3.6 1.1 5.2 3 1.6-1.9 3.1-3 5.2-3 3.8 0 5.9 3.9 4.4 7.3C19.5 16.4 12 21 12 21z"></path></svg>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"></path></svg>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4z"></path><path d="M22 2 11 13"></path></svg>
+        </div>
+        
+          <span class="hrt" style="--dx: -28px; animation-delay: 0s">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.8 4.5c2.1 0 3.6 1.1 5.2 3 1.6-1.9 3.1-3 5.2-3 3.8 0 5.9 3.9 4.4 7.3C19.5 16.4 12 21 12 21z"></path></svg>
+          </span>
+        
+          <span class="hrt" style="--dx: -8px; animation-delay: .55s">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.8 4.5c2.1 0 3.6 1.1 5.2 3 1.6-1.9 3.1-3 5.2-3 3.8 0 5.9 3.9 4.4 7.3C19.5 16.4 12 21 12 21z"></path></svg>
+          </span>
+        
+          <span class="hrt" style="--dx: -42px; animation-delay: 1.1s">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.8 4.5c2.1 0 3.6 1.1 5.2 3 1.6-1.9 3.1-3 5.2-3 3.8 0 5.9 3.9 4.4 7.3C19.5 16.4 12 21 12 21z"></path></svg>
+          </span>
+        
+          <span class="hrt" style="--dx: -16px; animation-delay: 1.6s">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.8 4.5c2.1 0 3.6 1.1 5.2 3 1.6-1.9 3.1-3 5.2-3 3.8 0 5.9 3.9 4.4 7.3C19.5 16.4 12 21 12 21z"></path></svg>
+          </span>
+        
+          <span class="hrt" style="--dx: -36px; animation-delay: 2.2s">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.8 4.5c2.1 0 3.6 1.1 5.2 3 1.6-1.9 3.1-3 5.2-3 3.8 0 5.9 3.9 4.4 7.3C19.5 16.4 12 21 12 21z"></path></svg>
+          </span>
+        
+          <span class="hrt" style="--dx: -4px; animation-delay: 2.7s">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.8 4.5c2.1 0 3.6 1.1 5.2 3 1.6-1.9 3.1-3 5.2-3 3.8 0 5.9 3.9 4.4 7.3C19.5 16.4 12 21 12 21z"></path></svg>
+          </span>
+        
+        <div style="position: absolute; left: 16px; right: 16px; bottom: 18px; color: #F4F4F1">
+          <div style="font-size: 13px; font-weight: 600">@leonardo.olc</div>
+          <div style="font-size: 11px; color: #B5B5AE; margin-top: 3px">Bezahlte Partnerschaft · [Marke]</div>
+          <div style="margin-top: 12px; height: 3px; background: rgba(244,244,241,.2); border-radius: 2px; overflow: hidden">
+            <div class="prog" style="height: 100%; background: #F4F4F1"></div>
+          </div>
+        </div>
+      </div></div>
+
+      <div class="chip hide-m" style="left: -6px; top: 70px; animation-delay: 1.2s">
+        <div style="background: #F4F4F1; border: 1.5px solid #0D0D0D; border-radius: 16px; padding: 12px 16px; display: flex; align-items: center; gap: 10px">
+          <span style="width: 26px; height: 26px; border-radius: 50%; background: #0D0D0D; color: #F4F4F1; display: grid; place-items: center">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"></path></svg>
+          </span>
+          <div>
+            <div class="mono" style="font-size: 10px; color: #5A5A55">Brand Deal</div>
+            <div style="font-weight: 600; font-size: 14px">Bestätigt</div>
+          </div>
+        </div>
+      </div>
+      <div class="chip hide-m" style="right: -6px; bottom: 54px; animation-delay: 1.4s">
+        <div style="background: #0D0D0D; color: #F4F4F1; border-radius: 16px; padding: 12px 16px; display: flex; align-items: center; gap: 10px; animation-delay: -3s">
+          <span class="dotping"></span>
+          <div style="font-weight: 600; font-size: 14px">Kampagne live</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gekreuzte Bänder -->
+  <div style="position: relative; height: 230px; overflow: hidden" aria-hidden="true">
+    <div style="position: absolute; left: -5%; right: -5%; top: 64px; transform: rotate(2.5deg); background: var(--accent); color: #0D0D0D; padding: 16px 0; overflow: hidden">
+      <div class="track-r">
+        
+          <span class="disp" style="font-size: 30px; padding: 0 26px; white-space: nowrap; display: inline-flex; align-items: center; gap: 52px">Instagram<span style="width: 9px; height: 9px; border-radius: 50%; background: #0D0D0D; display: inline-block"></span></span>
+        
+          <span class="disp" style="font-size: 30px; padding: 0 26px; white-space: nowrap; display: inline-flex; align-items: center; gap: 52px">TikTok<span style="width: 9px; height: 9px; border-radius: 50%; background: #0D0D0D; display: inline-block"></span></span>
+        
+          <span class="disp" style="font-size: 30px; padding: 0 26px; white-space: nowrap; display: inline-flex; align-items: center; gap: 52px">YouTube<span style="width: 9px; height: 9px; border-radius: 50%; background: #0D0D0D; display: inline-block"></span></span>
+        
+          <span class="disp" style="font-size: 30px; padding: 0 26px; white-space: nowrap; display: inline-flex; align-items: center; gap: 52px">Brand Deals<span style="width: 9px; height: 9px; border-radius: 50%; background: #0D0D0D; display: inline-block"></span></span>
+        
+          <span class="disp" style="font-size: 30px; padding: 0 26px; white-space: nowrap; display: inline-flex; align-items: center; gap: 52px">UGC<span style="width: 9px; height: 9px; border-radius: 50%; background: #0D0D0D; display: inline-block"></span></span>
+        
+          <span class="disp" style="font-size: 30px; padding: 0 26px; white-space: nowrap; display: inline-flex; align-items: center; gap: 52px">Kooperationen<span style="width: 9px; height: 9px; border-radius: 50%; background: #0D0D0D; display: inline-block"></span></span>
+        
+          <span class="disp" style="font-size: 30px; padding: 0 26px; white-space: nowrap; display: inline-flex; align-items: center; gap: 52px">Community<span style="width: 9px; height: 9px; border-radius: 50%; background: #0D0D0D; display: inline-block"></span></span>
+        
+          <span class="disp" style="font-size: 30px; padding: 0 26px; white-space: nowrap; display: inline-flex; align-items: center; gap: 52px">Instagram<span style="width: 9px; height: 9px; border-radius: 50%; background: #0D0D0D; display: inline-block"></span></span>
+        
+          <span class="disp" style="font-size: 30px; padding: 0 26px; white-space: nowrap; display: inline-flex; align-items: center; gap: 52px">TikTok<span style="width: 9px; height: 9px; border-radius: 50%; background: #0D0D0D; display: inline-block"></span></span>
+        
+          <span class="disp" style="font-size: 30px; padding: 0 26px; white-space: nowrap; display: inline-flex; align-items: center; gap: 52px">YouTube<span style="width: 9px; height: 9px; border-radius: 50%; background: #0D0D0D; display: inline-block"></span></span>
+        
+          <span class="disp" style="font-size: 30px; padding: 0 26px; white-space: nowrap; display: inline-flex; align-items: center; gap: 52px">Brand Deals<span style="width: 9px; height: 9px; border-radius: 50%; background: #0D0D0D; display: inline-block"></span></span>
+        
+          <span class="disp" style="font-size: 30px; padding: 0 26px; white-space: nowrap; display: inline-flex; align-items: center; gap: 52px">UGC<span style="width: 9px; height: 9px; border-radius: 50%; background: #0D0D0D; display: inline-block"></span></span>
+        
+          <span class="disp" style="font-size: 30px; padding: 0 26px; white-space: nowrap; display: inline-flex; align-items: center; gap: 52px">Kooperationen<span style="width: 9px; height: 9px; border-radius: 50%; background: #0D0D0D; display: inline-block"></span></span>
+        
+          <span class="disp" style="font-size: 30px; padding: 0 26px; white-space: nowrap; display: inline-flex; align-items: center; gap: 52px">Community<span style="width: 9px; height: 9px; border-radius: 50%; background: #0D0D0D; display: inline-block"></span></span>
+        
+      </div>
+    </div>
+    <div style="position: absolute; left: -5%; right: -5%; top: 70px; transform: rotate(-3deg); background: #0D0D0D; color: #F4F4F1; padding: 18px 0; overflow: hidden">
+      <div class="track">
+        
+          <span class="disp" style="font-size: 30px; padding: 0 26px; white-space: nowrap; display: inline-flex; align-items: center; gap: 52px">Influencer Marketing<span style="width: 9px; height: 9px; border-radius: 50%; background: var(--accent); display: inline-block"></span></span>
+        
+          <span class="disp" style="font-size: 30px; padding: 0 26px; white-space: nowrap; display: inline-flex; align-items: center; gap: 52px">Brand Deals<span style="width: 9px; height: 9px; border-radius: 50%; background: var(--accent); display: inline-block"></span></span>
+        
+          <span class="disp" style="font-size: 30px; padding: 0 26px; white-space: nowrap; display: inline-flex; align-items: center; gap: 52px">Kampagnen<span style="width: 9px; height: 9px; border-radius: 50%; background: var(--accent); display: inline-block"></span></span>
+        
+          <span class="disp" style="font-size: 30px; padding: 0 26px; white-space: nowrap; display: inline-flex; align-items: center; gap: 52px">Creator Management<span style="width: 9px; height: 9px; border-radius: 50%; background: var(--accent); display: inline-block"></span></span>
+        
+          <span class="disp" style="font-size: 30px; padding: 0 26px; white-space: nowrap; display: inline-flex; align-items: center; gap: 52px">Reels<span style="width: 9px; height: 9px; border-radius: 50%; background: var(--accent); display: inline-block"></span></span>
+        
+          <span class="disp" style="font-size: 30px; padding: 0 26px; white-space: nowrap; display: inline-flex; align-items: center; gap: 52px">Reichweite<span style="width: 9px; height: 9px; border-radius: 50%; background: var(--accent); display: inline-block"></span></span>
+        
+          <span class="disp" style="font-size: 30px; padding: 0 26px; white-space: nowrap; display: inline-flex; align-items: center; gap: 52px">Storytelling<span style="width: 9px; height: 9px; border-radius: 50%; background: var(--accent); display: inline-block"></span></span>
+        
+          <span class="disp" style="font-size: 30px; padding: 0 26px; white-space: nowrap; display: inline-flex; align-items: center; gap: 52px">Influencer Marketing<span style="width: 9px; height: 9px; border-radius: 50%; background: var(--accent); display: inline-block"></span></span>
+        
+          <span class="disp" style="font-size: 30px; padding: 0 26px; white-space: nowrap; display: inline-flex; align-items: center; gap: 52px">Brand Deals<span style="width: 9px; height: 9px; border-radius: 50%; background: var(--accent); display: inline-block"></span></span>
+        
+          <span class="disp" style="font-size: 30px; padding: 0 26px; white-space: nowrap; display: inline-flex; align-items: center; gap: 52px">Kampagnen<span style="width: 9px; height: 9px; border-radius: 50%; background: var(--accent); display: inline-block"></span></span>
+        
+          <span class="disp" style="font-size: 30px; padding: 0 26px; white-space: nowrap; display: inline-flex; align-items: center; gap: 52px">Creator Management<span style="width: 9px; height: 9px; border-radius: 50%; background: var(--accent); display: inline-block"></span></span>
+        
+          <span class="disp" style="font-size: 30px; padding: 0 26px; white-space: nowrap; display: inline-flex; align-items: center; gap: 52px">Reels<span style="width: 9px; height: 9px; border-radius: 50%; background: var(--accent); display: inline-block"></span></span>
+        
+          <span class="disp" style="font-size: 30px; padding: 0 26px; white-space: nowrap; display: inline-flex; align-items: center; gap: 52px">Reichweite<span style="width: 9px; height: 9px; border-radius: 50%; background: var(--accent); display: inline-block"></span></span>
+        
+          <span class="disp" style="font-size: 30px; padding: 0 26px; white-space: nowrap; display: inline-flex; align-items: center; gap: 52px">Storytelling<span style="width: 9px; height: 9px; border-radius: 50%; background: var(--accent); display: inline-block"></span></span>
+        
+      </div>
+    </div>
+  </div>
+
+  <!-- Statement -->
+  <section class="wrap" style="padding-top: 110px; padding-bottom: 60px">
+    <div class="mono" style="color: #5A5A55; margin-bottom: 28px">Worum es uns geht</div>
+    <p class="disp" style="margin: 0; font-size: clamp(32px, 4.6vw, 68px); line-height: 1.04; max-width: 1180px">
+      <span class="w">Wir</span><span class="w">verbinden</span><span class="w">Marken</span><span class="w">mit</span><span class="w">Creatorn,</span><span class="w">denen</span><span class="w">ihre</span><span class="w">Community</span><span class="w">wirklich</span><span class="w w-acc">zuhört</span><span class="w">–</span><span class="w">und</span><span class="w">machen</span><span class="w">daraus</span><span class="w">Kampagnen,</span><span class="w">die</span><span class="w">man</span><span class="w">nicht</span><span class="w w-acc">wegscrollt.</span>
+    </p>
+  </section>
+
+  <!-- Leistungen -->
+  <section id="leistungen" class="wrap" style="padding-top: 110px; padding-bottom: 40px">
+    <div class="reveal" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 24px; margin-bottom: 52px">
+      <h2 class="disp" style="margin: 0; font-size: clamp(40px, 5.5vw, 80px)">Zwei Seiten.<br>Ein Deal.</h2>
+      <p style="margin: 0; max-width: 400px; font-size: 17px; line-height: 1.55; color: #2B2B28">Wir sitzen zwischen Marke und Creator – und sorgen dafür, dass beide Seiten gewinnen.</p>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px">
+      <article class="panel reveal" style="background: #0D0D0D; color: #F4F4F1; --rule: #2E2E2B">
+        <div style="display: flex; justify-content: space-between; align-items: center">
+          <span class="mono" style="color: #B5B5AE">Für Marken</span>
+          <span class="mono" style="background: var(--accent); color: #0D0D0D; border-radius: 999px; padding: 6px 12px; font-size: 10px">Kampagnen</span>
+        </div>
+        <h3 class="disp" style="margin: 0; font-size: clamp(32px, 3.2vw, 46px)">Die richtigen Stimmen für eure Marke.</h3>
+        <ul style="margin: 0; padding: 0; list-style: none; font-size: 17px">
+          
+            <li class="row"><span class="mono" style="color: #7A7A74; width: 28px">01</span><span>Kampagnen-Strategie</span>
+              <svg class="ra" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent)" aria-hidden="true"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg>
+            </li>
+          
+            <li class="row"><span class="mono" style="color: #7A7A74; width: 28px">02</span><span>Creator-Auswahl &amp; Matching</span>
+              <svg class="ra" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent)" aria-hidden="true"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg>
+            </li>
+          
+            <li class="row"><span class="mono" style="color: #7A7A74; width: 28px">03</span><span>Verhandlung &amp; Verträge</span>
+              <svg class="ra" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent)" aria-hidden="true"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg>
+            </li>
+          
+            <li class="row"><span class="mono" style="color: #7A7A74; width: 28px">04</span><span>Abwicklung &amp; Content-Abnahme</span>
+              <svg class="ra" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent)" aria-hidden="true"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg>
+            </li>
+          
+            <li class="row"><span class="mono" style="color: #7A7A74; width: 28px">05</span><span>Auswertung &amp; Report</span>
+              <svg class="ra" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent)" aria-hidden="true"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg>
+            </li>
+          
+        </ul>
+      </article>
+      <article class="panel reveal" style="background: #FFFFFF; border: 1px solid #DADAD4; --rule: #E4E4DF">
+        <div style="display: flex; justify-content: space-between; align-items: center">
+          <span class="mono" style="color: #5A5A55">Für Creator</span>
+          <span class="mono" style="border: 1px solid #0D0D0D; border-radius: 999px; padding: 6px 12px; font-size: 10px">Management</span>
+        </div>
+        <h3 class="disp" style="margin: 0; font-size: clamp(32px, 3.2vw, 46px)">Du kreierst. Wir regeln den Rest.</h3>
+        <ul style="margin: 0; padding: 0; list-style: none; font-size: 17px">
+          
+            <li class="row"><span class="mono" style="color: #8A8A84; width: 28px">01</span><span>Brand Deals, die zu dir passen</span>
+              <svg class="ra" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg>
+            </li>
+          
+            <li class="row"><span class="mono" style="color: #8A8A84; width: 28px">02</span><span>Faire Gagen, hart verhandelt</span>
+              <svg class="ra" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg>
+            </li>
+          
+            <li class="row"><span class="mono" style="color: #8A8A84; width: 28px">03</span><span>Verträge &amp; Rechnungen</span>
+              <svg class="ra" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg>
+            </li>
+          
+            <li class="row"><span class="mono" style="color: #8A8A84; width: 28px">04</span><span>Strategie &amp; Wachstum</span>
+              <svg class="ra" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg>
+            </li>
+          
+            <li class="row"><span class="mono" style="color: #8A8A84; width: 28px">05</span><span>Persönliche 1:1-Betreuung</span>
+              <svg class="ra" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg>
+            </li>
+          
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <!-- Creator -->
+  <section id="creator" class="wrap" style="padding-top: 130px; padding-bottom: 40px">
+    <div class="reveal" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 24px; margin-bottom: 52px">
+      <div>
+        <div class="mono" style="color: #5A5A55; margin-bottom: 16px">Unsere Creator</div>
+        <h2 class="disp" style="margin: 0; font-size: clamp(40px, 5.5vw, 80px)">Gesichter,<br>denen man folgt.</h2>
+      </div>
+      <a class="btn btn-line" href="#kontakt">Creator anfragen
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg>
+      </a>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; align-items: start">
+      
+        <a class="cc reveal " href="#kontakt">
+          <div class="cc-media">
+            <div class="cc-img" style="background: #0D0D0D; color: #F4F4F1">
+              <span class="disp" style="font-size: 150px; opacity: .92">01</span>
+              <span class="mono" style="position: absolute; top: 18px; left: 18px; font-size: 10px; opacity: .75">[Portrait]</span>
+              <img class="media" src="bilder/creator-01.jpg" alt="Leonardo" onerror="this.remove()">
+            </div>
+            <div class="cc-over">
+              <span style="font-weight: 600; font-size: 15px">Profil ansehen</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"></path><path d="M8 7h9v9"></path></svg>
+            </div>
+          </div>
+          <div style="padding: 18px 4px 0; display: flex; justify-content: space-between; align-items: baseline; gap: 12px">
+            <div>
+              <div style="font-weight: 600; font-size: 19px">Leonardo</div>
+              <div style="font-size: 15px; color: #5A5A55; margin-top: 4px">@leonardo.olc</div>
+            </div>
+            <div class="mono" style="font-size: 12px; color: #2B2B28; white-space: nowrap">59K Follower</div>
+          </div>
+        </a>
+      
+        <a class="cc reveal cc-mid" href="#kontakt">
+          <div class="cc-media">
+            <div class="cc-img" style="background: #FF4F1F; color: #0D0D0D">
+              <span class="disp" style="font-size: 150px; opacity: .92">02</span>
+              <span class="mono" style="position: absolute; top: 18px; left: 18px; font-size: 10px; opacity: .75">[Portrait]</span>
+              <img class="media" src="bilder/creator-02.jpg" alt="[Creator-Name 2]" onerror="this.remove()">
+            </div>
+            <div class="cc-over">
+              <span style="font-weight: 600; font-size: 15px">Profil ansehen</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"></path><path d="M8 7h9v9"></path></svg>
+            </div>
+          </div>
+          <div style="padding: 18px 4px 0; display: flex; justify-content: space-between; align-items: baseline; gap: 12px">
+            <div>
+              <div style="font-weight: 600; font-size: 19px">[Creator-Name 2]</div>
+              <div style="font-size: 15px; color: #5A5A55; margin-top: 4px">@[handle2]</div>
+            </div>
+            <div class="mono" style="font-size: 12px; color: #2B2B28; white-space: nowrap">[Follower 2]</div>
+          </div>
+        </a>
+      
+        <a class="cc reveal " href="#kontakt">
+          <div class="cc-media">
+            <div class="cc-img" style="background: #E4E4DF; color: #0D0D0D">
+              <span class="disp" style="font-size: 150px; opacity: .92">03</span>
+              <span class="mono" style="position: absolute; top: 18px; left: 18px; font-size: 10px; opacity: .75">[Portrait]</span>
+              <img class="media" src="bilder/creator-03.jpg" alt="[Creator-Name 3]" onerror="this.remove()">
+            </div>
+            <div class="cc-over">
+              <span style="font-weight: 600; font-size: 15px">Profil ansehen</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"></path><path d="M8 7h9v9"></path></svg>
+            </div>
+          </div>
+          <div style="padding: 18px 4px 0; display: flex; justify-content: space-between; align-items: baseline; gap: 12px">
+            <div>
+              <div style="font-weight: 600; font-size: 19px">[Creator-Name 3]</div>
+              <div style="font-size: 15px; color: #5A5A55; margin-top: 4px">@[handle3]</div>
+            </div>
+            <div class="mono" style="font-size: 12px; color: #2B2B28; white-space: nowrap">[Follower 3]</div>
+          </div>
+        </a>
+      
+    </div>
+  </section>
+
+  <!-- Marken -->
+  <section id="marken" style="padding-top: 140px; padding-bottom: 40px; overflow: hidden">
+    <div class="wrap">
+      <div class="mono reveal" style="color: #5A5A55; margin-bottom: 16px">Referenzen</div>
+      <h2 class="disp reveal" style="margin: 0 0 48px; font-size: clamp(40px, 5.5vw, 80px)">Marken, mit denen<br>wir gearbeitet haben.</h2>
+    </div>
+    <div class="logorow reveal">
+      <div class="track" style="animation-duration: 36s"><div class="logo"><img src="logos/porsche.svg" alt="Porsche" onload="this.parentNode.classList.add('has-logo')" onerror="if(!this.dataset.t){this.dataset.t=1;this.src='logos/porsche.png'}else{this.remove()}"><span class="lname">Porsche</span></div><div class="logo"><img src="logos/polestar.svg" alt="Polestar" onload="this.parentNode.classList.add('has-logo')" onerror="if(!this.dataset.t){this.dataset.t=1;this.src='logos/polestar.png'}else{this.remove()}"><span class="lname">Polestar</span></div><div class="logo"><img src="logos/vitamin-well.svg" alt="Vitamin Well" onload="this.parentNode.classList.add('has-logo')" onerror="if(!this.dataset.t){this.dataset.t=1;this.src='logos/vitamin-well.png'}else{this.remove()}"><span class="lname">Vitamin Well</span></div><div class="logo"><img src="logos/hockenheimring.svg" alt="Hockenheimring" onload="this.parentNode.classList.add('has-logo')" onerror="if(!this.dataset.t){this.dataset.t=1;this.src='logos/hockenheimring.png'}else{this.remove()}"><span class="lname">Hockenheimring</span></div><div class="logo"><img src="logos/unme.svg" alt="UNME" onload="this.parentNode.classList.add('has-logo')" onerror="if(!this.dataset.t){this.dataset.t=1;this.src='logos/unme.png'}else{this.remove()}"><span class="lname">UNME</span></div><div class="logo"><img src="logos/porsche.svg" alt="Porsche" onload="this.parentNode.classList.add('has-logo')" onerror="if(!this.dataset.t){this.dataset.t=1;this.src='logos/porsche.png'}else{this.remove()}"><span class="lname">Porsche</span></div><div class="logo"><img src="logos/polestar.svg" alt="Polestar" onload="this.parentNode.classList.add('has-logo')" onerror="if(!this.dataset.t){this.dataset.t=1;this.src='logos/polestar.png'}else{this.remove()}"><span class="lname">Polestar</span></div><div class="logo"><img src="logos/vitamin-well.svg" alt="Vitamin Well" onload="this.parentNode.classList.add('has-logo')" onerror="if(!this.dataset.t){this.dataset.t=1;this.src='logos/vitamin-well.png'}else{this.remove()}"><span class="lname">Vitamin Well</span></div><div class="logo"><img src="logos/hockenheimring.svg" alt="Hockenheimring" onload="this.parentNode.classList.add('has-logo')" onerror="if(!this.dataset.t){this.dataset.t=1;this.src='logos/hockenheimring.png'}else{this.remove()}"><span class="lname">Hockenheimring</span></div><div class="logo"><img src="logos/unme.svg" alt="UNME" onload="this.parentNode.classList.add('has-logo')" onerror="if(!this.dataset.t){this.dataset.t=1;this.src='logos/unme.png'}else{this.remove()}"><span class="lname">UNME</span></div></div>
+    </div>
+  </section>
+
+  <!-- Media & App -->
+  <section id="mehr" class="wrap" style="padding-top: 140px; padding-bottom: 40px">
+    <div class="mono reveal" style="color: #5A5A55; margin-bottom: 16px">Außerdem</div>
+    <h2 class="disp reveal" style="margin: 0 0 52px; font-size: clamp(40px, 5.5vw, 80px)">Alles aus<br>einer Hand.</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px">
+      <article class="card reveal" style="background: var(--accent); color: #0D0D0D; border-radius: 28px; padding: clamp(28px, 4vw, 44px); display: flex; flex-direction: column; gap: 20px; min-height: 360px">
+        <div style="display: flex; justify-content: space-between; align-items: center">
+          <span class="mono">Media Produktion</span>
+          <span class="mono" style="display: inline-flex; align-items: center; gap: 8px; font-size: 11px"><span class="rec" style="width: 8px; height: 8px; border-radius: 50%; background: #0D0D0D"></span>Rec</span>
+        </div>
+        <h3 class="disp" style="margin: 0; font-size: clamp(30px, 3vw, 42px)">Content, den wir selbst drehen.</h3>
+        <p style="margin: 0; font-size: 16px; line-height: 1.6; flex-grow: 1; max-width: 480px">Konzept, Dreh und Schnitt aus eigener Hand – einzeln buchbar oder direkt kombiniert mit unseren Creatorn.</p>
+        <a class="btn btn-dark" href="#kontakt" style="align-self: flex-start">Media anfragen
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg>
+        </a>
+      </article>
+      <article class="card reveal" style="background: #0D0D0D; color: #F4F4F1; border-radius: 28px; padding: clamp(28px, 4vw, 44px); display: flex; flex-direction: column; gap: 20px; min-height: 360px">
+        <div style="display: flex; justify-content: space-between; align-items: center">
+          <span class="mono" style="color: #B5B5AE">LLK App</span>
+          <span class="mono" style="border: 1px solid #3A3A37; border-radius: 999px; padding: 6px 12px; font-size: 10px; color: #D8D8D2">In Entwicklung</span>
+        </div>
+        <h3 class="disp" style="margin: 0; font-size: clamp(30px, 3vw, 42px)">Bald auch <span style="color: var(--accent)">per App.</span></h3>
+        <p style="margin: 0; font-size: 16px; line-height: 1.6; color: #D8D8D2; flex-grow: 1; max-width: 480px">Unsere Plattform, auf der Marken und kleine Creator direkt zusammenfinden. Trag dich ein und sei von Anfang an dabei.</p>
+        <a class="btn btn-ghost" href="#kontakt" style="align-self: flex-start">Auf die Warteliste</a>
+      </article>
+    </div>
+  </section>
+
+  <!-- Kontakt -->
+  <section id="kontakt" class="wrap" style="padding-top: 140px; padding-bottom: 100px">
+    <div class="reveal" style="position: relative; background: #0D0D0D; color: #F4F4F1; border-radius: 32px; padding: clamp(36px, 6vw, 84px); display: flex; flex-wrap: wrap; gap: 48px; justify-content: space-between; align-items: flex-end; overflow: hidden">
+      <div class="hide-m" style="position: absolute; top: 36px; right: 40px; width: 140px; height: 140px" aria-hidden="true">
+        <svg class="spin" width="140" height="140" viewBox="0 0 140 140">
+          <defs><path id="llkcirc" d="M70,70 m-52,0 a52,52 0 1,1 104,0 a52,52 0 1,1 -104,0"></path></defs>
+          <text font-family="Geist Mono, monospace" font-size="11" letter-spacing="3" fill="#F4F4F1"><textPath href="#llkcirc">JETZT ANFRAGEN · JETZT ANFRAGEN · </textPath></text>
+        </svg>
+        <span style="position: absolute; inset: 0; display: grid; place-items: center; color: var(--accent)">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"></path><path d="M8 7h9v9"></path></svg>
+        </span>
+      </div>
+      <div style="flex: 1 1 520px; min-width: 0">
+        <h2 class="disp" style="margin: 0; font-size: clamp(52px, 8vw, 120px)">Lass uns<br><span style="color: var(--accent)">reden.</span></h2>
+        <p style="margin: 28px 0 0; font-size: 18px; line-height: 1.6; color: #D8D8D2; max-width: 480px">Marke mit Kampagnenidee oder Creator, der wachsen will – schreib uns, wir melden uns innerhalb von [Zeitraum].</p>
+      </div>
+      <div style="flex: 1 1 320px; display: flex; flex-direction: column; gap: 12px">
+        <a class="btn btn-accent" href="mailto:[E-Mail]" style="justify-content: space-between; min-height: 64px; font-size: 17px; padding: 0 28px">Anfrage als Marke
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg>
+        </a>
+        <a class="btn btn-ghost" href="mailto:[E-Mail]" style="justify-content: space-between; min-height: 64px; font-size: 17px; padding: 0 28px">Bewerbung als Creator
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg>
+        </a>
+        <div class="mono" style="color: #B5B5AE; margin-top: 8px; font-size: 11px">[E-Mail] · @[instagram]</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer style="border-top: 1px solid #DADAD4; overflow: hidden">
+    <div class="wrap" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 20px; padding-top: 32px; padding-bottom: 40px">
+      <div style="display: flex; align-items: center; gap: 18px; flex-wrap: wrap">
+        <div style="display: flex; align-items: center; gap: 10px">
+          <span class="disp" style="font-size: 22px; letter-spacing: -0.06em; line-height: 0.8">LLK</span>
+          <span style="width: 2px; height: 18px; background: var(--accent)"></span>
+          <span class="mono" style="font-size: 10px; font-weight: 500; letter-spacing: 0.32em">Management</span>
+        </div>
+        <span class="mono" style="font-size: 11px; color: #5A5A55">© [Stadt]</span>
+      </div>
+      <div style="display: flex; gap: 24px; flex-wrap: wrap">
+        <a class="navlink" href="impressum.html" style="font-size: 14px">Impressum</a>
+        <a class="navlink" href="datenschutz.html" style="font-size: 14px">Datenschutz</a>
+        <a class="navlink" href="[Instagram-Link]" style="font-size: 14px">Instagram</a>
+        <a class="navlink" href="[TikTok-Link]" style="font-size: 14px">TikTok</a>
+      </div>
+    </div>
+  </footer>
+</div>
+</body>
+</html>

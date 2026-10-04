@@ -1,0 +1,5 @@
+Creator-Fotos hier ablegen (Hochformat, ideal 1200 x 1600 px, JPG):
+creator-01.jpg  -> erste Karte
+creator-02.jpg  -> zweite Karte (mittlere)
+creator-03.jpg  -> dritte Karte
+Solange keine Datei da ist, wird der Platzhalter angezeigt.

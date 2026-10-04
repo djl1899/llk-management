@@ -1,0 +1,5 @@
+Clips für die drei Handys im Kopfbereich (9:16, MP4, ohne Ton, kurz halten: 5-10 Sek., unter 4 MB):
+clip-1.mp4  -> linkes Handy
+clip-2.mp4  -> mittleres Handy (vorne)
+clip-3.mp4  -> rechtes Handy
+Solange keine Datei da ist, wird der Platzhalter angezeigt.
