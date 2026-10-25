@@ -84,7 +84,7 @@ img,video{display:block;max-width:100%}
 
 .band{position:relative;margin-top:-1px;height:clamp(560px,92vh,900px);background:radial-gradient(120% 90% at 50% 10%,#ff5a26 0%,#e4260f 38%,#a7120a 70%,#4c0703 100%);overflow:hidden;color:#fff;isolation:isolate}
 .band canvas{position:absolute;inset:0;width:100%;height:100%;z-index:0}
-.band::after{content:"";position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");mix-blend-mode:overlay;opacity:.35;pointer-events:none;z-index:3}
+.band::after{content:"";position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");opacity:.08;pointer-events:none;z-index:1}
 .stats{position:relative;z-index:4;display:grid;grid-template-columns:repeat(3,1fr);padding:34px var(--pad) 0;gap:20px}
 .stats div{font-weight:700;font-size:clamp(18px,2vw,26px);line-height:1.1}
 .stats small{display:block;font-weight:500;font-size:14px;opacity:.85;margin-top:6px}
@@ -93,20 +93,20 @@ img,video{display:block;max-width:100%}
 
 /* 3D phone stage */
 .stage{position:absolute;inset:0;z-index:2;display:grid;place-items:center;perspective:1400px;pointer-events:none}
-.stage-inner{position:relative;width:min(760px,92vw);height:min(560px,62vh);transform-style:preserve-3d;transform:rotateX(var(--rx,8deg)) rotateY(var(--ry,-10deg));transition:transform .9s var(--ease);margin-top:40px}
-.phone{position:absolute;top:50%;left:50%;width:clamp(150px,19vw,230px);aspect-ratio:9/19;border-radius:34px;background:#0c0c0c;padding:8px;box-shadow:0 50px 80px -30px rgba(40,0,0,.7),0 0 0 1px rgba(255,255,255,.08) inset;transform-style:preserve-3d}
+.stage-inner{position:relative;width:min(760px,92vw);height:min(560px,62vh);transform-style:preserve-3d;transform:rotateX(8deg) rotateY(-5deg);will-change:transform;margin-top:40px}
+.phone{position:absolute;top:50%;left:50%;width:clamp(150px,19vw,230px);aspect-ratio:9/19;border-radius:34px;background:#0c0c0c;padding:8px;box-shadow:0 50px 80px -30px rgba(40,0,0,.7),0 0 0 1px rgba(255,255,255,.08) inset;backface-visibility:hidden;-webkit-backface-visibility:hidden;will-change:transform}
 .phone .scr{position:relative;width:100%;height:100%;border-radius:27px;overflow:hidden}
 .phone .notch{position:absolute;top:10px;left:50%;width:34%;height:20px;border-radius:20px;background:#000;transform:translateX(-50%);z-index:5}
-.ph-c{transform:translate(-50%,-50%) translateZ(80px)}
-.ph-l{transform:translate(-50%,-50%) translateX(-82%) translateZ(-60px) rotateY(18deg) rotateZ(-6deg)}
-.ph-r{transform:translate(-50%,-50%) translateX(82%) translateZ(-60px) rotateY(-18deg) rotateZ(6deg)}
+.ph-c{transform:translate(-50%,-50%) translateZ(45px)}
+.ph-l{transform:translate(-50%,-50%) translateX(-110%) translateZ(-15px) rotateY(14deg) rotateZ(-5deg)}
+.ph-r{transform:translate(-50%,-50%) translateX(110%) translateZ(-15px) rotateY(-14deg) rotateZ(5deg)}
 .phone{animation:bobT 6s ease-in-out infinite}
 .ph-l,.ph-r{animation-duration:7s}
 @keyframes bobT{50%{translate:0 -14px}}
 .scr-video video{width:100%;height:100%;object-fit:cover;background:linear-gradient(160deg,#333,#111)}
 .scr-video .ui{position:absolute;inset:0;padding:40px 14px 16px;display:flex;flex-direction:column;justify-content:space-between;background:linear-gradient(transparent 55%,rgba(0,0,0,.7));font-size:12px;font-weight:600}
 .scr-video .row{display:flex;justify-content:space-between;align-items:center}
-.pill{display:inline-flex;align-items:center;gap:6px;padding:4px 9px;border-radius:999px;background:rgba(0,0,0,.45);backdrop-filter:blur(6px);font-size:10px;letter-spacing:.08em;font-weight:700}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:4px 9px;border-radius:999px;background:rgba(0,0,0,.55);font-size:10px;letter-spacing:.08em;font-weight:700}
 .pill.live{background:var(--orange)}
 .pill.live::before{content:"";width:6px;height:6px;border-radius:50%;background:#fff;animation:blink 1.2s infinite}
 @keyframes blink{50%{opacity:.2}}
@@ -114,18 +114,17 @@ img,video{display:block;max-width:100%}
 .handle small{display:block;font-weight:500;opacity:.75;font-size:11px}
 .scr-media{background:linear-gradient(160deg,#ff6a33,#e3250e 60%,#8b0e06);color:#fff;padding:40px 16px 18px;display:flex;flex-direction:column;justify-content:space-between}
 .scr-media .t{font-family:var(--display);font-size:clamp(28px,3.2vw,40px);line-height:.95;text-transform:uppercase}
-.scr-media .tag{font-size:10px;letter-spacing:.16em;font-weight:700}
+.scr-media .tag{font-size:9px;letter-spacing:.08em;font-weight:700;white-space:nowrap}
 .rec{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.1em}
 .rec::before{content:"";width:8px;height:8px;border-radius:50%;background:#fff;animation:blink 1s infinite}
 .scr-brief{background:#f7f4ee;color:var(--ink);padding:40px 16px 18px;display:flex;flex-direction:column;justify-content:space-between}
 .scr-brief .t{font-family:var(--display);font-size:clamp(28px,3.2vw,40px);line-height:.95;text-transform:uppercase}
 .scr-brief .t em{color:var(--orange);font-style:normal}
-.scr-brief .tag{font-size:10px;letter-spacing:.16em;font-weight:700;color:var(--muted)}
+.scr-brief .tag{font-size:9px;letter-spacing:.08em;font-weight:700;color:var(--muted);white-space:nowrap}
 .bars{display:grid;gap:6px}
 .bars i{display:block;height:6px;border-radius:6px;background:#e3ddd2;position:relative;overflow:hidden}
-.bars i::after{content:"";position:absolute;inset:0;background:var(--orange);transform-origin:left;animation:fill 3.6s var(--ease) infinite}
-.bars i:nth-child(2)::after{animation-delay:.4s}.bars i:nth-child(3)::after{animation-delay:.8s}
-@keyframes fill{0%{transform:scaleX(0)}60%,100%{transform:scaleX(1)}}
+.bars i::after{content:"";position:absolute;inset:0;background:var(--orange);transform-origin:left;transform:scaleX(.9)}
+.bars i:nth-child(2)::after{transform:scaleX(.62)}.bars i:nth-child(3)::after{transform:scaleX(.78)}
 
 .band-foot{position:absolute;left:0;right:0;bottom:0;z-index:4;display:flex;justify-content:space-between;align-items:flex-end;padding:0 var(--pad) 28px;font-size:13px;letter-spacing:.16em;font-weight:700;text-transform:uppercase}
 .scroll-hint{display:flex;align-items:center;gap:10px}
@@ -288,10 +287,12 @@ footer{background:var(--ink);color:#fff;padding:60px var(--pad) 0;overflow:hidde
   .stats div:nth-child(3){display:none}
   .stats div:nth-child(2){text-align:right}
   .stage-inner{margin-top:70px;height:56vh}
-  .phone{width:38vw;border-radius:26px;padding:6px}
+  .phone{width:34vw;border-radius:24px;padding:6px}
+  .scr-brief .t,.scr-media .t{font-size:22px}
+  .scr-brief > .tag:last-child,.scr-media > .tag:last-child{display:none}
   .phone .scr{border-radius:21px}
-  .ph-l{transform:translate(-50%,-50%) translateX(-62%) translateZ(-60px) rotateY(18deg) rotateZ(-6deg)}
-  .ph-r{transform:translate(-50%,-50%) translateX(62%) translateZ(-60px) rotateY(-18deg) rotateZ(6deg)}
+  .ph-l{transform:translate(-50%,-50%) translateX(-88%) translateZ(-15px) rotateY(14deg) rotateZ(-5deg)}
+  .ph-r{transform:translate(-50%,-50%) translateX(88%) translateZ(-15px) rotateY(-14deg) rotateZ(5deg)}
   .band-foot .scroll-hint span{display:none}
   .cgrid{grid-template-columns:1fr}
   .f-grid{grid-template-columns:1fr}
@@ -655,12 +656,27 @@ footer{background:var(--ink);color:#fff;padding:60px var(--pad) 0;overflow:hidde
 
   // 3D stage follows pointer
   const stage = $('#stage'), band = $('#band');
-  if (!reduce) band.addEventListener('pointermove', e => {
-    const b = band.getBoundingClientRect();
-    const x = (e.clientX - b.left) / b.width - .5, y = (e.clientY - b.top) / b.height - .5;
-    stage.style.setProperty('--ry', x * 26 + 'deg');
-    stage.style.setProperty('--rx', -y * 16 + 6 + 'deg');
-  });
+  let tRx = 8, tRy = -5, cRx = 8, cRy = -5, stageRaf = 0;
+  const stageLoop = () => {
+    cRx += (tRx - cRx) * .09; cRy += (tRy - cRy) * .09;
+    stage.style.transform = `rotateX(${cRx.toFixed(2)}deg) rotateY(${cRy.toFixed(2)}deg)`;
+    stageRaf = (Math.abs(tRx - cRx) > .02 || Math.abs(tRy - cRy) > .02) ? requestAnimationFrame(stageLoop) : 0;
+  };
+  const nudgeStage = () => { if (!stageRaf) stageRaf = requestAnimationFrame(stageLoop); };
+  if (fine && !reduce) {
+    band.addEventListener('pointermove', e => {
+      const b = band.getBoundingClientRect();
+      const x = (e.clientX - b.left) / b.width - .5, y = (e.clientY - b.top) / b.height - .5;
+      tRy = -5 + x * 18; tRx = 8 - y * 10;
+      nudgeStage();
+    });
+    band.addEventListener('pointerleave', () => { tRx = 8; tRy = -5; nudgeStage(); });
+  }
+
+  // Only decode the hero video while it is on screen
+  $$('.scr-video video').forEach(v => new IntersectionObserver(([e]) => {
+    if (e.isIntersecting) v.play().catch(() => {}); else v.pause();
+  }).observe(v));
 
   // Tilt cards
   if (fine && !reduce) $$('.tilt').forEach(c => {
@@ -691,7 +707,7 @@ footer{background:var(--ink);color:#fff;padding:60px var(--pad) 0;overflow:hidde
 
   function makeScene(canvas, setup) {
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(40, 1, .1, 200);
     const api = setup(scene, camera);
@@ -772,7 +788,7 @@ footer{background:var(--ink);color:#fff;padding:60px var(--pad) 0;overflow:hidde
           gl_FragColor=vec4(col,1.);
         }`
     });
-    const blob = new THREE.Mesh(new THREE.SphereGeometry(1.7, 160, 160), mat);
+    const blob = new THREE.Mesh(new THREE.SphereGeometry(1.7, 96, 96), mat);
     scene.add(blob);
     // orbiting ring
     const ring = new THREE.Mesh(new THREE.TorusGeometry(2.9, .025, 16, 200),
