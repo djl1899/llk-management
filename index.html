@@ -127,6 +127,14 @@ a{color:#0D0D0D}a:hover{color:#5A5A55}
 .cc-over{position:absolute;left:0;right:0;bottom:0;padding:22px 24px;background:#0D0D0D;color:#F4F4F1;display:flex;justify-content:space-between;align-items:center;transform:translateY(101%);transition:transform .5s cubic-bezier(.2,.7,.2,1)}
 .cc:hover .cc-over{transform:none}
 @media (min-width: 900px){.cc-mid{margin-top:88px}}
+.roster-tile{place-items:stretch;padding:26px 24px;display:flex !important;flex-direction:column;justify-content:space-between}
+.roster-text{position:relative}
+.roster-stack{display:flex}
+.roster-stack span{width:52px;height:52px;border-radius:50%;border:3px solid #0D0D0D;margin-left:-14px;display:grid;place-items:center}
+.roster-stack span:first-child{margin-left:0}
+.roster-stack .more{background:#F4F4F1;color:#0D0D0D;font-weight:700;font-size:22px}
+.roster-plus{font-size:150px;line-height:.8;opacity:.92}
+.cc:hover .roster-tile{transform:scale(1.03)}
 
 /* ---------- Mehr ---------- */
 .card{transition:transform .45s cubic-bezier(.2,.7,.2,1),box-shadow .45s}
@@ -204,21 +212,37 @@ a{color:#0D0D0D}a:hover{color:#5A5A55}
     <div style="flex: 1 1 400px; position: relative; height: 560px; min-width: 0" aria-hidden="true">
       <div class="glow"></div>
 
-      <div class="phone ph1"><div class="phone-in" style="background: linear-gradient(160deg, #2A2A28, #121211)">
-        <div style="position: absolute; inset: 0; display: grid; place-items: center"><span class="mono" style="font-size: 10px; color: #6B6B66">[Clip Creator 1]</span></div>
-        <video class="media" src="videos/clip-1.mp4" autoplay muted loop playsinline onerror="this.remove()"></video>
-        <div style="position: absolute; left: 16px; bottom: 18px; color: #F4F4F1; font-size: 12px; font-weight: 600">@alex.darioo</div>
+      <div class="phone ph1"><div class="phone-in" style="background: var(--accent); color: #0D0D0D">
+        <div style="position: absolute; top: 18px; left: 18px; right: 18px; display: flex; justify-content: space-between; align-items: center">
+          <span class="mono" style="font-size: 10px">Media</span>
+          <span class="mono" style="display: inline-flex; align-items: center; gap: 6px; font-size: 10px"><span class="rec" style="width: 7px; height: 7px; border-radius: 50%; background: #0D0D0D"></span>Rec</span>
+        </div>
+        <div style="position: absolute; left: 18px; right: 18px; bottom: 22px">
+          <div class="disp" style="font-size: 34px; line-height: .95">Foto<br>&amp; Video</div>
+          <div class="mono" style="font-size: 9px; margin-top: 10px; opacity: .75">Konzept · Dreh · Schnitt</div>
+        </div>
       </div></div>
 
-      <div class="phone ph3"><div class="phone-in" style="background: linear-gradient(160deg, #3A3A37, #161615)">
-        <div style="position: absolute; inset: 0; display: grid; place-items: center"><span class="mono" style="font-size: 10px; color: #6B6B66">[Clip Creator 3]</span></div>
-        <video class="media" src="videos/clip-3.mp4" autoplay muted loop playsinline onerror="this.remove()"></video>
-        <div style="position: absolute; left: 16px; bottom: 18px; color: #F4F4F1; font-size: 12px; font-weight: 600">@dona.prh</div>
+      <div class="phone ph3"><div class="phone-in" style="background: #F4F4F1; color: #0D0D0D; border-color: #0D0D0D">
+        <div style="position: absolute; top: 18px; left: 18px; right: 18px; display: flex; justify-content: space-between; align-items: center">
+          <span class="mono" style="font-size: 10px">Briefing</span>
+          <span class="mono" style="font-size: 10px; color: var(--accent)">●</span>
+        </div>
+        <div style="position: absolute; left: 18px; right: 18px; top: 64px; display: grid; gap: 9px">
+          <div style="height: 8px; border-radius: 4px; background: #0D0D0D; width: 70%"></div>
+          <div style="height: 8px; border-radius: 4px; background: #CFCFC8; width: 92%"></div>
+          <div style="height: 8px; border-radius: 4px; background: #CFCFC8; width: 80%"></div>
+          <div style="height: 8px; border-radius: 4px; background: #CFCFC8; width: 60%"></div>
+        </div>
+        <div style="position: absolute; left: 18px; right: 18px; bottom: 22px">
+          <div class="disp" style="font-size: 34px; line-height: .95">Kampagne<span style="color: var(--accent)">.</span></div>
+          <div class="mono" style="font-size: 9px; margin-top: 10px; color: #5A5A55">Matching · Vertrag · Report</div>
+        </div>
       </div></div>
 
       <div class="phone ph2"><div class="phone-in" style="background: linear-gradient(170deg, #1C1C1A, #0D0D0D)">
-        <div style="position: absolute; inset: 0; display: grid; place-items: center"><span class="mono" style="font-size: 10px; color: #6B6B66">[Clip Creator 2]</span></div>
-        <video class="media" src="videos/clip-2.mp4" autoplay muted loop playsinline onerror="this.remove()"></video>
+        <div style="position: absolute; inset: 0; display: grid; place-items: center"><span class="mono" style="font-size: 10px; color: #6B6B66">[Video 1]</span></div>
+        <video class="media" src="videos/clip-1.mp4" autoplay muted loop playsinline onerror="this.remove()"></video>
         <div style="position: absolute; top: 16px; left: 16px; right: 16px; display: flex; justify-content: space-between; align-items: center; color: #F4F4F1">
           <span class="mono" style="display: inline-flex; align-items: center; gap: 7px; font-size: 10px"><span class="rec" style="width: 8px; height: 8px; border-radius: 50%; background: var(--accent)"></span>Live</span>
           <span class="mono" style="font-size: 10px; color: #B5B5AE">9:16</span>
@@ -432,7 +456,6 @@ a{color:#0D0D0D}a:hover{color:#5A5A55}
       </a>
     </div>
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; align-items: start">
-      
         <a class="cc reveal " href="https://www.instagram.com/leonardo.olc/" target="_blank" rel="noopener">
           <div class="cc-media">
             <div class="cc-img" style="background: #0D0D0D; color: #F4F4F1">
@@ -450,49 +473,43 @@ a{color:#0D0D0D}a:hover{color:#5A5A55}
               <div style="font-weight: 600; font-size: 19px">Leonardo</div>
               <div style="font-size: 15px; color: #5A5A55; margin-top: 4px">@leonardo.olc</div>
             </div>
-            <div style="font-weight: 600; font-size: 19px; color: #0D0D0D; white-space: nowrap">273K Follower</div>
+            <div style="font-weight: 600; font-size: 19px; color: #0D0D0D; white-space: nowrap">59K Follower</div>
           </div>
         </a>
       
-        <a class="cc reveal cc-mid" href="https://www.instagram.com/alex.darioo/" target="_blank" rel="noopener">
+        <a class="cc reveal cc-mid" href="mailto:kontakt@llk-management.com?subject=Creator-Anfrage">
           <div class="cc-media">
-            <div class="cc-img" style="background: #FF4F1F; color: #0D0D0D">
-              <span class="disp" style="font-size: 150px; opacity: .92">02</span>
-              <span class="mono" style="position: absolute; top: 18px; left: 18px; font-size: 10px; opacity: .75">[Portrait]</span>
-              <img class="media" src="bilder/creator-02.jpg" alt="Alex" onerror="this.remove()">
-            </div>
-            <div class="cc-over">
-              <span style="font-weight: 600; font-size: 15px">Profil ansehen</span>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"></path><path d="M8 7h9v9"></path></svg>
+            <div class="cc-img roster-tile" style="background: #0D0D0D; color: #F4F4F1">
+              <div class="roster-stack" aria-hidden="true">
+                <span style="background: #2A2A28"></span><span style="background: #3A3A37"></span><span style="background: var(--accent)"></span><span class="more">+</span>
+              </div>
+              <div class="roster-text">
+                <div class="mono" style="color: #B5B5AE">Netzwerk</div>
+                <div class="disp" style="font-size: clamp(30px, 2.6vw, 38px); margin-top: 12px">Mehr Creator<br>auf Anfrage.</div>
+                <p style="margin: 14px 0 0; font-size: 15px; line-height: 1.5; color: #D8D8D2">Für jede Kampagne stellen wir die passenden Profile zusammen. Nach Nische, Zielgruppe und Budget.</p>
+              </div>
             </div>
           </div>
           <div style="padding: 18px 4px 0; display: flex; justify-content: space-between; align-items: baseline; gap: 12px">
-            <div>
-              <div style="font-weight: 600; font-size: 19px">Alex</div>
-              <div style="font-size: 15px; color: #5A5A55; margin-top: 4px">@alex.darioo</div>
-            </div>
-            <div style="font-weight: 600; font-size: 19px; color: #0D0D0D; white-space: nowrap">319K Follower</div>
+            <div style="font-weight: 600; font-size: 19px">Für Unternehmen</div>
+            <div style="font-weight: 600; font-size: 15px; display: inline-flex; align-items: center; gap: 8px">Creator anfragen <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></div>
           </div>
         </a>
-      
-        <a class="cc reveal " href="https://www.instagram.com/dona.prh/" target="_blank" rel="noopener">
+
+        <a class="cc reveal" href="mailto:kontakt@llk-management.com?subject=Bewerbung%20als%20Creator">
           <div class="cc-media">
-            <div class="cc-img" style="background: #E4E4DF; color: #0D0D0D">
-              <span class="disp" style="font-size: 150px; opacity: .92">03</span>
-              <span class="mono" style="position: absolute; top: 18px; left: 18px; font-size: 10px; opacity: .75">[Portrait]</span>
-              <img class="media" src="bilder/creator-03.jpg" alt="Dona" onerror="this.remove()">
-            </div>
-            <div class="cc-over">
-              <span style="font-weight: 600; font-size: 15px">Profil ansehen</span>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"></path><path d="M8 7h9v9"></path></svg>
+            <div class="cc-img roster-tile" style="background: var(--accent); color: #0D0D0D">
+              <div class="roster-plus disp" aria-hidden="true">+</div>
+              <div class="roster-text">
+                <div class="mono">Wir wachsen</div>
+                <div class="disp" style="font-size: clamp(30px, 2.6vw, 38px); margin-top: 12px">Dein Gesicht<br>hier?</div>
+                <p style="margin: 14px 0 0; font-size: 15px; line-height: 1.5">Wir nehmen laufend neue Creator auf. Die Followerzahl entscheidet nicht.</p>
+              </div>
             </div>
           </div>
           <div style="padding: 18px 4px 0; display: flex; justify-content: space-between; align-items: baseline; gap: 12px">
-            <div>
-              <div style="font-weight: 600; font-size: 19px">Dona</div>
-              <div style="font-size: 15px; color: #5A5A55; margin-top: 4px">@dona.prh</div>
-            </div>
-            <div style="font-weight: 600; font-size: 19px; color: #0D0D0D; white-space: nowrap">78K Follower</div>
+            <div style="font-weight: 600; font-size: 19px">Für Creator</div>
+            <div style="font-weight: 600; font-size: 15px; display: inline-flex; align-items: center; gap: 8px">Jetzt bewerben <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></div>
           </div>
         </a>
       
