@@ -234,27 +234,12 @@ img,video{display:block;max-width:100%}
 
 /* ---------- Media ---------- */
 .media{padding:clamp(80px,10vw,150px) var(--pad);background:var(--cream-2);position:relative;overflow:hidden}
-.m-grid{display:grid;grid-template-columns:1.25fr 1fr;gap:clamp(30px,5vw,80px);align-items:center;perspective:1600px}
-.vf{position:relative;border-radius:var(--radius);overflow:hidden;background:#111;transform:rotateX(var(--vrx,18deg)) scale(var(--vs,.92));transform-origin:50% 100%;box-shadow:0 60px 90px -50px rgba(0,0,0,.6);aspect-ratio:var(--ar,16/10);transition:aspect-ratio .7s var(--ease);max-height:78vh;margin:0 auto;width:100%}
-.vf video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.vf .hud{position:absolute;inset:0;z-index:2;color:#fff;font-size:12px;font-weight:700;letter-spacing:.12em;padding:20px}
-.vf .corner{position:absolute;width:28px;height:28px;border:2px solid #fff}
-.vf .c1{top:16px;left:16px;border-right:0;border-bottom:0}.vf .c2{top:16px;right:16px;border-left:0;border-bottom:0}.vf .c3{bottom:16px;left:16px;border-right:0;border-top:0}.vf .c4{bottom:16px;right:16px;border-left:0;border-top:0}
-.vf .hud-t{position:absolute;top:26px;left:56px;right:56px;display:flex;justify-content:space-between}
-.vf .hud-b{position:absolute;bottom:26px;left:56px;right:56px;display:flex;justify-content:space-between}
-.vf .rec{color:#fff}
-.vf .rec::before{background:var(--orange)}
-.vf .cross{position:absolute;top:50%;left:50%;width:40px;height:40px;transform:translate(-50%,-50%)}
-.vf .cross::before,.vf .cross::after{content:"";position:absolute;background:rgba(255,255,255,.7)}
-.vf .cross::before{left:50%;top:0;bottom:0;width:1px}.vf .cross::after{top:50%;left:0;right:0;height:1px}
+.m-grid{max-width:900px}
 .m-copy h2{font-size:clamp(40px,5vw,78px);line-height:.95;font-weight:700;letter-spacing:-.04em;margin:16px 0 22px}
 .m-copy h2 em{font-style:normal;color:var(--orange)}
 .m-copy .lead{font-size:19px;color:#2d2a26;margin-bottom:28px}
 .m-copy h3{font-size:24px;font-weight:700;letter-spacing:-.02em;margin-bottom:8px}
 .m-copy p{color:#46423c}
-.formats{display:flex;flex-wrap:wrap;gap:8px;margin:26px 0 30px}
-.formats button{border:0;cursor:pointer;font:700 13px var(--sans);letter-spacing:.1em;height:40px;padding:0 16px;border-radius:999px;background:transparent;box-shadow:inset 0 0 0 1.5px var(--ink);color:var(--ink);transition:background .3s,color .3s}
-.formats button.on,.formats button:hover{background:var(--ink);color:#fff}
 
 .services{padding:clamp(70px,9vw,140px) 0 0}
 .services .sec-head{padding:0 var(--pad);justify-content:center;text-align:center;flex-direction:column;align-items:center}
@@ -313,7 +298,7 @@ footer{background:var(--ink);color:#fff;padding:60px var(--pad) 0;overflow:hidde
 @media (max-width:980px){
   .nav ul,.nav .btn{display:none}
   .burger{display:block}
-  .intro,.m-grid,.ct-grid{grid-template-columns:1fr}
+  .intro,.ct-grid{grid-template-columns:1fr}
   .cgrid{grid-template-columns:1fr 1fr}
   .c-lead{grid-column:1/-1}
   .f-grid{grid-template-columns:1fr 1fr}
@@ -402,7 +387,7 @@ footer{background:var(--ink);color:#fff;padding:60px var(--pad) 0;overflow:hidde
 
         <div class="phone ph-c"><div class="float" style="height:100%"><div class="scr scr-video">
           <div class="notch"></div>
-          <video src="https://llk-management.com/videos/clip-1.mp4" autoplay muted loop playsinline preload="metadata"></video>
+          <video src="assets/nardooo_06.mp4" autoplay muted loop playsinline preload="metadata"></video>
           <div class="ui">
             <div class="row"><span class="pill live">LIVE</span><span class="pill">9:16</span></div>
             <div class="row"><span class="handle">@leonardo.olc<small>Werbung</small></span></div>
@@ -490,7 +475,7 @@ footer{background:var(--ink);color:#fff;padding:60px var(--pad) 0;overflow:hidde
   </div>
   <div class="cgrid">
     <a class="ccard c-lead tilt rv" href="https://www.instagram.com/leonardo.olc/" target="_blank" rel="noopener">
-      <img src="https://llk-management.com/bilder/creator-01.jpg" alt="Creator Leonardo" loading="lazy">
+      <img src="assets/creator-leo.png" alt="Creator Leonardo" loading="lazy">
       <span class="glare"></span>
       <div class="c-top"><span class="n">01</span><span class="pill" style="font-size:12px;padding:7px 12px">Profil ansehen</span></div>
       <div>
@@ -522,15 +507,6 @@ footer{background:var(--ink);color:#fff;padding:60px var(--pad) 0;overflow:hidde
 <!-- Media -->
 <section class="media" id="media">
   <div class="m-grid">
-    <div class="vf" id="vf">
-      <video src="https://llk-management.com/videos/clip-1.mp4" autoplay muted loop playsinline preload="metadata"></video>
-      <div class="hud" aria-hidden="true">
-        <i class="corner c1"></i><i class="corner c2"></i><i class="corner c3"></i><i class="corner c4"></i>
-        <div class="hud-t"><span class="rec">REC</span><span id="tc">00:00:00:00</span></div>
-        <i class="cross"></i>
-        <div class="hud-b"><span>KONZEPT · DREH · SCHNITT</span><span id="arl">16:9</span></div>
-      </div>
-    </div>
     <div class="m-copy">
       <span class="eyebrow rv">Media Produktion</span>
       <h2 class="rv d1">Foto &amp; Video<br><em>für Unternehmen.</em></h2>
@@ -539,13 +515,7 @@ footer{background:var(--ink);color:#fff;padding:60px var(--pad) 0;overflow:hidde
         <h3>Alles aus einer Hand.</h3>
         <p>Ihr erzählt uns, was ihr zeigen wollt. Wir entwickeln die Idee, drehen mit Multicam-Setup vor Ort und liefern den fertigen Schnitt in allen Formaten, die ihr braucht. Einzeln buchbar oder kombiniert mit unseren Creatorn.</p>
       </div>
-      <div class="formats rv d3" id="formats">
-        <button data-ar="9/16" data-l="9:16">9:16 REELS</button>
-        <button data-ar="16/9" data-l="16:9" class="on">16:9 FILM</button>
-        <button data-ar="4/5" data-l="4:5">4:5 FEED</button>
-        <button data-ar="3/2" data-l="FOTO">FOTO</button>
-      </div>
-      <a class="btn btn-dark magnetic rv d3" href="mailto:kontakt@llk-management.com?subject=Media-Produktion%20Anfrage">Dreh anfragen <span class="arr"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12 12 4M5 4h7v7"/></svg></span></a>
+      <a class="btn btn-dark magnetic rv d3" style="margin-top:30px" href="mailto:kontakt@llk-management.com?subject=Media-Produktion%20Anfrage">Dreh anfragen <span class="arr"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12 12 4M5 4h7v7"/></svg></span></a>
     </div>
   </div>
 </section>
@@ -719,21 +689,6 @@ footer{background:var(--ink);color:#fff;padding:60px var(--pad) 0;overflow:hidde
     requestAnimationFrame(() => requestAnimationFrame(() => next.classList.add('show')));
   }));
 
-  // Media viewfinder: formats + timecode
-  const vf = $('#vf'), arl = $('#arl');
-  $$('#formats button').forEach(b => b.addEventListener('click', () => {
-    $$('#formats button').forEach(x => x.classList.toggle('on', x === b));
-    vf.style.setProperty('--ar', b.dataset.ar);
-    vf.style.maxWidth = b.dataset.ar === '9/16' ? '420px' : b.dataset.ar === '4/5' ? '560px' : '';
-    arl.textContent = b.dataset.l;
-  }));
-  const tc = $('#tc'), t0 = performance.now();
-  const pad2 = n => String(n).padStart(2, '0');
-  setInterval(() => {
-    const f = Math.floor((performance.now() - t0) / 40);
-    tc.textContent = `${pad2(Math.floor(f / 90000))}:${pad2(Math.floor(f / 1500) % 60)}:${pad2(Math.floor(f / 25) % 60)}:${pad2(f % 25)}`;
-  }, 40);
-
   // Scroll-driven effects
   function onScroll() {
     const y = scrollY, vh = innerHeight;
@@ -752,11 +707,6 @@ footer{background:var(--ink);color:#fff;padding:60px var(--pad) 0;overflow:hidde
     const wp = Math.min(1, Math.max(0, (vh * .85 - wr.top) / (wr.height + vh * .35)));
     const n = Math.round(wp * wspans.length);
     wspans.forEach((s, i) => s.classList.toggle('on', i < n));
-
-    const vr = vf.getBoundingClientRect();
-    const vp = Math.min(1, Math.max(0, (vh - vr.top) / (vh * .8)));
-    vf.style.setProperty('--vrx', (1 - vp) * 22 + 'deg');
-    vf.style.setProperty('--vs', .9 + vp * .1);
   }
   addEventListener('scroll', onScroll, { passive: true });
   addEventListener('resize', () => { sizeProcess(); onScroll(); });
