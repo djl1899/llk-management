@@ -199,12 +199,12 @@ img,video{display:block;max-width:100%}
 .sec-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:clamp(36px,5vw,64px)}
 .sec-head h2{font-size:clamp(44px,6.4vw,100px);line-height:.95;font-weight:700;letter-spacing:-.04em;margin-top:16px}
 .sec-head h2 em{font-style:normal;color:var(--orange)}
-.cgrid{display:grid;grid-template-columns:1.15fr 1fr 1fr;gap:20px;perspective:1200px}
+.cgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;perspective:1200px}
 .tilt{position:relative;border-radius:var(--radius);overflow:hidden;transform-style:preserve-3d;transform:rotateX(var(--trx,0)) rotateY(var(--try,0));transition:transform .6s var(--ease),box-shadow .6s;will-change:transform}
 .tilt:hover{box-shadow:0 40px 70px -35px rgba(0,0,0,.45)}
 .ccard{min-height:clamp(440px,42vw,580px);display:flex;flex-direction:column;justify-content:space-between;padding:26px}
 .c-lead{color:#fff;background:#222}
-.c-lead img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 1.2s var(--ease)}
+.c-lead img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 30%;transition:transform 1.2s var(--ease)}
 .c-lead:hover img{transform:scale(1.06)}
 .c-lead::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(0,0,0,.25),transparent 30%,transparent 50%,rgba(0,0,0,.8))}
 .c-lead>*:not(img){position:relative;z-index:2}
@@ -274,7 +274,7 @@ footer{background:var(--ink);color:#fff;padding:60px var(--pad) 0;overflow:hidde
   .burger{display:block}
   .intro,.ct-grid{grid-template-columns:1fr}
   .cgrid{grid-template-columns:1fr 1fr}
-  .cgrid .c-lead:first-child{grid-column:1/-1}
+  .cgrid .c-grow{grid-column:1/-1}
   .f-grid{grid-template-columns:1fr 1fr}
   .pane{grid-template-columns:1fr}
   .p-side{position:static}
@@ -447,19 +447,19 @@ footer{background:var(--ink);color:#fff;padding:60px var(--pad) 0;overflow:hidde
   </div>
   <div class="cgrid">
     <a class="ccard c-lead tilt rv" href="https://www.instagram.com/leonardo.olc/" target="_blank" rel="noopener">
-      <img src="assets/creator-leo.png" alt="Creator Leonardo" loading="lazy">
+      <img src="assets/creator-leo.png" alt="" loading="lazy">
       <div class="c-top"><span class="n">01</span><span class="pill" style="font-size:12px;padding:7px 12px">Profil ansehen</span></div>
       <div>
         <div class="c-name">Leonardo</div>
-        <div class="c-meta"><span>@leonardo.olc</span><span class="f">59K Follower</span></div>
+        <div class="c-meta"><span>@leonardo.olc</span><span class="f">280K Follower</span></div>
       </div>
     </a>
-    <a class="ccard c-lead tilt rv d1" href="mailto:kontakt@llk-management.com?subject=Creator-Anfrage%20Mariella">
-      <img src="assets/mariella.jpeg" onerror="this.onerror=null;this.src='mariella.jpeg'" alt="Creatorin Mariella" loading="lazy">
+    <a class="ccard c-lead tilt rv d1" href="mailto:kontakt@llk-management.com?subject=Creator-Anfrage%20Mariella" aria-label="Mariella anfragen">
+      <img id="img-mariella" src="assets/mariella.jpeg" alt="" loading="lazy">
       <div class="c-top"><span class="n">02</span><span class="pill" style="font-size:12px;padding:7px 12px">Anfragen</span></div>
       <div>
         <div class="c-name">Mariella</div>
-        <div class="c-meta"><span>Creatorin</span></div>
+        <div class="c-meta"><span>Creatorin</span><span class="f">36K Follower</span></div>
       </div>
     </a>
     <a class="ccard c-grow tilt rv d2" href="mailto:kontakt@llk-management.com?subject=Bewerbung%20als%20Creator">
@@ -585,6 +585,17 @@ footer{background:var(--ink);color:#fff;padding:60px var(--pad) 0;overflow:hidde
     if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
   }), { threshold: .15, rootMargin: '0px 0px -40px 0px' });
   $$('.rv').forEach(el => io.observe(el));
+
+  // Mariella's photo: try the likely upload locations and spellings in order
+  const mImg = $('#img-mariella');
+  if (mImg) {
+    const tries = ['mariella.jpeg', 'Mariella.jpeg', 'mariella.jpg', 'Mariella.jpg', 'mariella.png', 'Mariella.png'];
+    const candidates = [];
+    tries.forEach(f => { candidates.push('assets/' + f); candidates.push(f); });
+    let ci = 0;
+    mImg.addEventListener('error', () => { ci += 1; if (ci < candidates.length) mImg.src = candidates[ci]; });
+    mImg.src = candidates[0];
+  }
 
   // Mobile nav
   const burger = $('#burger'), mnav = $('#mnav');
