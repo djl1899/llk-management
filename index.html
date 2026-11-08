@@ -227,7 +227,23 @@ img,video{display:block;max-width:100%}
 
 /* ---------- Media ---------- */
 .media{padding:clamp(80px,10vw,150px) var(--pad);background:var(--cream-2);position:relative;overflow:hidden}
-.m-grid{max-width:900px}
+.m-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(30px,5vw,90px);align-items:center}
+.m-insta{justify-self:end;width:100%;max-width:470px}
+.insta-gate{position:relative;overflow:hidden;isolation:isolate;border-radius:var(--radius);min-height:600px;padding:32px;display:flex;flex-direction:column;justify-content:space-between;gap:30px;color:#fff;background:#d4200c}
+.insta-gate .blur{position:absolute;inset:-20%;z-index:-1;filter:blur(34px);background:
+  radial-gradient(34% 40% at 30% 30%,rgba(40,0,0,.85),transparent 70%),
+  radial-gradient(40% 32% at 75% 78%,rgba(255,170,100,.8),transparent 70%),
+  linear-gradient(160deg,#ff6a2f,#e3250e 55%,#9c1006);animation:drift 10s ease-in-out infinite alternate}
+.ig-top{display:flex;align-items:center;gap:14px;font-weight:700;font-size:18px}
+.ig-ico{width:46px;height:46px;border-radius:14px;background:rgba(255,255,255,.2);display:grid;place-items:center}
+.ig-ico svg{width:24px;height:24px}
+.ig-top small{display:block;font-weight:500;font-size:13px;opacity:.85}
+.ig-mid h3{font-family:var(--display);font-weight:400;text-transform:uppercase;font-size:clamp(54px,6vw,84px);line-height:.9}
+.ig-mid p{margin-top:16px;font-size:15px;line-height:1.5;opacity:.92;max-width:34ch}
+.ig-act{display:flex;flex-wrap:wrap;align-items:center;gap:14px 20px}
+.ig-act .btn{height:52px}
+.ig-act a.alt{font-weight:600;font-size:15px;text-decoration:underline;text-underline-offset:4px}
+.insta-frame{display:block;width:100%;height:720px;border:0;border-radius:var(--radius);background:#fff;box-shadow:0 40px 70px -40px rgba(0,0,0,.45)}
 .m-copy h2{font-size:clamp(40px,5vw,78px);line-height:.95;font-weight:700;letter-spacing:-.04em;margin:16px 0 22px}
 .m-copy h2 em{font-style:normal;color:var(--orange)}
 .m-copy .lead{font-size:19px;color:#2d2a26;margin-bottom:28px}
@@ -272,7 +288,8 @@ footer{background:var(--ink);color:#fff;padding:60px var(--pad) 0;overflow:hidde
 @media (max-width:980px){
   .nav ul,.nav .btn{display:none}
   .burger{display:block}
-  .intro,.ct-grid{grid-template-columns:1fr}
+  .intro,.ct-grid,.m-grid{grid-template-columns:1fr}
+  .m-insta{justify-self:start;max-width:520px}
   .cgrid{grid-template-columns:1fr 1fr}
   .cgrid .c-grow{grid-column:1/-1}
   .f-grid{grid-template-columns:1fr 1fr}
@@ -332,7 +349,7 @@ footer{background:var(--ink);color:#fff;padding:60px var(--pad) 0;overflow:hidde
 <section class="hero">
   <div class="hero-top rv">
     <span>©2026</span>
-    <span class="loc"><i class="dot"></i> MANNHEIM</span>
+    <span class="loc"><i class="dot"></i>HOCKENHEIM · MANNHEIM</span>
   </div>
   <div class="mega-wrap">
     <h1 class="mega" id="mega" aria-label="Influencer Marketing">INFLUENCER</h1>
@@ -486,6 +503,24 @@ footer{background:var(--ink);color:#fff;padding:60px var(--pad) 0;overflow:hidde
       </div>
       <a class="btn btn-dark magnetic rv d3" style="margin-top:30px" href="mailto:kontakt@llk-management.com?subject=Media-Produktion%20Anfrage">Dreh anfragen <span class="arr"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12 12 4M5 4h7v7"/></svg></span></a>
     </div>
+
+    <div class="m-insta rv d2">
+      <div class="insta-gate" id="insta-gate">
+        <div class="blur"></div>
+        <div class="ig-top">
+          <span class="ig-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".6" fill="currentColor"/></svg></span>
+          <span>@llk.management<small>Auf Instagram</small></span>
+        </div>
+        <div class="ig-mid">
+          <h3>Unser letzter Beitrag.</h3>
+          <p>Hier siehst du unseren aktuellsten Instagram-Beitrag und kannst direkt durchblättern. Beim Laden werden Daten an Instagram (Meta) übertragen.</p>
+        </div>
+        <div class="ig-act">
+          <button type="button" class="btn btn-light" id="insta-load">Beitrag laden <span class="arr"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12 12 4M5 4h7v7"/></svg></span></button>
+          <a class="alt" href="https://www.instagram.com/llk.management/" target="_blank" rel="noopener">Profil auf Instagram</a>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -518,7 +553,7 @@ footer{background:var(--ink);color:#fff;padding:60px var(--pad) 0;overflow:hidde
     <div><h4>Anfragen</h4><a href="mailto:kontakt@llk-management.com?subject=Kampagnen-Anfrage">Kampagne anfragen</a><a href="mailto:kontakt@llk-management.com?subject=Media-Produktion%20Anfrage">Dreh anfragen</a><a href="mailto:kontakt@llk-management.com?subject=Bewerbung%20als%20Creator">Als Creator bewerben</a></div>
     <div><h4>Kontakt</h4><a href="mailto:kontakt@llk-management.com">kontakt@llk-management.com</a><span>Hockenheim · Mannheim</span><a href="impressum.html">Impressum</a><a href="datenschutz.html">Datenschutz</a></div>
   </div>
-  <div class="f-bottom"><span>© 2026 · MANNHEIM</span><span>LLK MANAGEMENT</span></div>
+  <div class="f-bottom"><span>© 2026 · HOCKENHEIM · MANNHEIM</span><span>LLK MANAGEMENT</span></div>
   <div class="f-mega" id="fmega" aria-hidden="true">LLK MANAGEMENT</div>
 </footer>
 
@@ -595,6 +630,30 @@ footer{background:var(--ink);color:#fff;padding:60px var(--pad) 0;overflow:hidde
     let ci = 0;
     mImg.addEventListener('error', () => { ci += 1; if (ci < candidates.length) mImg.src = candidates[ci]; });
     mImg.src = candidates[0];
+  }
+
+  // Instagram post: only loaded after a click, so nothing is sent to Instagram before that
+  const gate = $('#insta-gate'), loadBtn = $('#insta-load');
+  if (gate && loadBtn) {
+    loadBtn.addEventListener('click', () => {
+      const f = document.createElement('iframe');
+      f.className = 'insta-frame';
+      f.src = 'https://www.instagram.com/p/DffDheyCHrw/embed/captioned/';
+      f.title = 'Aktueller Instagram-Beitrag von llk.management';
+      f.setAttribute('scrolling', 'no');
+      f.setAttribute('allowtransparency', 'true');
+      f.allowFullscreen = true;
+      gate.replaceWith(f);
+    });
+    // The embed reports its own height, so the whole post fits without an inner scrollbar
+    addEventListener('message', e => {
+      if (!/(^|\.)instagram\.com$/.test(new URL(e.origin).hostname)) return;
+      try {
+        const d = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
+        const f = $('.insta-frame');
+        if (f && d && d.type === 'MEASURE' && d.details && d.details.height) f.style.height = d.details.height + 'px';
+      } catch (_) {}
+    });
   }
 
   // Mobile nav
