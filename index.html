@@ -229,21 +229,32 @@ img,video{display:block;max-width:100%}
 .media{padding:clamp(80px,10vw,150px) var(--pad);background:var(--cream-2);position:relative;overflow:hidden}
 .m-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(30px,5vw,90px);align-items:center}
 .m-insta{justify-self:end;width:100%;max-width:470px}
-.insta-gate{position:relative;overflow:hidden;isolation:isolate;border-radius:var(--radius);min-height:600px;padding:32px;display:flex;flex-direction:column;justify-content:space-between;gap:30px;color:#fff;background:#d4200c}
-.insta-gate .blur{position:absolute;inset:-20%;z-index:-1;filter:blur(34px);background:
-  radial-gradient(34% 40% at 30% 30%,rgba(40,0,0,.85),transparent 70%),
-  radial-gradient(40% 32% at 75% 78%,rgba(255,170,100,.8),transparent 70%),
-  linear-gradient(160deg,#ff6a2f,#e3250e 55%,#9c1006);animation:drift 10s ease-in-out infinite alternate}
-.ig-top{display:flex;align-items:center;gap:14px;font-weight:700;font-size:18px}
-.ig-ico{width:46px;height:46px;border-radius:14px;background:rgba(255,255,255,.2);display:grid;place-items:center}
-.ig-ico svg{width:24px;height:24px}
-.ig-top small{display:block;font-weight:500;font-size:13px;opacity:.85}
-.ig-mid h3{font-family:var(--display);font-weight:400;text-transform:uppercase;font-size:clamp(54px,6vw,84px);line-height:.9}
-.ig-mid p{margin-top:16px;font-size:15px;line-height:1.5;opacity:.92;max-width:34ch}
-.ig-act{display:flex;flex-wrap:wrap;align-items:center;gap:14px 20px}
-.ig-act .btn{height:52px}
-.ig-act a.alt{font-weight:600;font-size:15px;text-decoration:underline;text-underline-offset:4px}
-.insta-frame{display:block;width:100%;height:720px;border:0;border-radius:var(--radius);background:#fff;box-shadow:0 40px 70px -40px rgba(0,0,0,.45)}
+.igc{background:#fff;color:var(--ink);border-radius:var(--radius);overflow:hidden;box-shadow:0 40px 70px -40px rgba(0,0,0,.45);outline:none}
+.igc[hidden]{display:none}
+.igc-head{display:flex;align-items:center;gap:12px;padding:14px 16px}
+.igc-av{width:40px;height:40px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-family:var(--display);font-size:15px;letter-spacing:.02em;flex:0 0 auto}
+.igc-name{flex:1;min-width:0;font-weight:700;font-size:15px;line-height:1.2}
+.igc-name small{display:block;font-weight:500;color:var(--muted);font-size:12px}
+.igc-btn{flex:0 0 auto;background:var(--orange);color:#fff;border-radius:999px;padding:9px 16px;font-weight:700;font-size:13px;transition:background .3s}
+.igc-btn:hover{background:var(--ink)}
+.igc-view{position:relative;aspect-ratio:var(--igar,4/5);background:#111;user-select:none;-webkit-user-select:none}
+.igc-track{display:flex;height:100%;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;-webkit-overflow-scrolling:touch;cursor:grab;overscroll-behavior-x:contain}
+.igc-track::-webkit-scrollbar{display:none}
+.igc-track.drag{scroll-snap-type:none;scroll-behavior:auto;cursor:grabbing}
+.igc-track img{flex:0 0 100%;width:100%;height:100%;object-fit:cover;scroll-snap-align:center;scroll-snap-stop:always;-webkit-user-drag:none;pointer-events:none}
+.igc-nav{position:absolute;top:50%;width:36px;height:36px;margin-top:-18px;border:0;border-radius:50%;background:rgba(255,255,255,.92);color:var(--ink);cursor:pointer;display:grid;place-items:center;box-shadow:0 6px 16px -6px rgba(0,0,0,.5);transition:transform .3s var(--ease),opacity .3s}
+.igc-nav:hover{transform:scale(1.1)}
+.igc-nav svg{width:16px;height:16px}
+.igc-nav.prev{left:12px}.igc-nav.next{right:12px}
+.igc-nav[hidden]{display:none}
+.igc-count{position:absolute;top:12px;right:12px;padding:5px 11px;border-radius:999px;background:rgba(13,13,13,.6);color:#fff;font-size:12px;font-weight:700;letter-spacing:.06em}
+.igc-dots{display:flex;justify-content:center;gap:6px;padding:14px 16px 4px}
+.igc-dots button{width:7px;height:7px;padding:0;border:0;border-radius:50%;background:#cfcac0;cursor:pointer;transition:background .3s,transform .3s}
+.igc-dots button.on{background:var(--orange);transform:scale(1.25)}
+.igc-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 16px 16px;font-size:14px}
+.igc-foot a{font-weight:700;color:var(--orange)}
+.igc-foot a:hover{text-decoration:underline}
+.igc-foot small{color:var(--muted);font-weight:600}
 .m-copy h2{font-size:clamp(40px,5vw,78px);line-height:.95;font-weight:700;letter-spacing:-.04em;margin:16px 0 22px}
 .m-copy h2 em{font-style:normal;color:var(--orange)}
 .m-copy .lead{font-size:19px;color:#2d2a26;margin-bottom:28px}
@@ -505,21 +516,24 @@ footer{background:var(--ink);color:#fff;padding:60px var(--pad) 0;overflow:hidde
     </div>
 
     <div class="m-insta rv d2">
-      <div class="insta-gate" id="insta-gate">
-        <div class="blur"></div>
-        <div class="ig-top">
-          <span class="ig-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".6" fill="currentColor"/></svg></span>
-          <span>@llk.management<small>Auf Instagram</small></span>
+      <article class="igc" id="igc" tabindex="0" aria-label="Aktueller Beitrag von llk.management, mit Pfeiltasten durchblättern" hidden>
+        <header class="igc-head">
+          <span class="igc-av" aria-hidden="true">LLK</span>
+          <span class="igc-name">llk.management<small>Instagram</small></span>
+          <a class="igc-btn" href="https://www.instagram.com/llk.management/" target="_blank" rel="noopener">Profil ansehen</a>
+        </header>
+        <div class="igc-view" id="igc-view">
+          <div class="igc-track" id="igc-track"></div>
+          <button type="button" class="igc-nav prev" id="igc-prev" aria-label="Vorheriges Bild" hidden><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3 5 8l5 5"/></svg></button>
+          <button type="button" class="igc-nav next" id="igc-next" aria-label="Nächstes Bild"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 3 5 5-5 5"/></svg></button>
+          <span class="igc-count" id="igc-count" aria-live="polite"></span>
         </div>
-        <div class="ig-mid">
-          <h3>Unser letzter Beitrag.</h3>
-          <p>Hier siehst du unseren aktuellsten Instagram-Beitrag und kannst direkt durchblättern. Beim Laden werden Daten an Instagram (Meta) übertragen.</p>
+        <div class="igc-dots" id="igc-dots"></div>
+        <div class="igc-foot">
+          <a href="https://www.instagram.com/llk.management/" target="_blank" rel="noopener">Mehr auf Instagram ansehen ↗</a>
+          <small>@llk.management</small>
         </div>
-        <div class="ig-act">
-          <button type="button" class="btn btn-light" id="insta-load">Beitrag laden <span class="arr"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12 12 4M5 4h7v7"/></svg></span></button>
-          <a class="alt" href="https://www.instagram.com/llk.management/" target="_blank" rel="noopener">Profil auf Instagram</a>
-        </div>
-      </div>
+      </article>
     </div>
   </div>
 </section>
@@ -632,28 +646,93 @@ footer{background:var(--ink);color:#fff;padding:60px var(--pad) 0;overflow:hidde
     mImg.src = candidates[0];
   }
 
-  // Instagram post: only loaded after a click, so nothing is sent to Instagram before that
-  const gate = $('#insta-gate'), loadBtn = $('#insta-load');
-  if (gate && loadBtn) {
-    loadBtn.addEventListener('click', () => {
-      const f = document.createElement('iframe');
-      f.className = 'insta-frame';
-      f.src = 'https://www.instagram.com/p/DffDheyCHrw/embed/captioned/';
-      f.title = 'Aktueller Instagram-Beitrag von llk.management';
-      f.setAttribute('scrolling', 'no');
-      f.setAttribute('allowtransparency', 'true');
-      f.allowFullscreen = true;
-      gate.replaceWith(f);
-    });
-    // The embed reports its own height, so the whole post fits without an inner scrollbar
-    addEventListener('message', e => {
-      if (!/(^|\.)instagram\.com$/.test(new URL(e.origin).hostname)) return;
-      try {
-        const d = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
-        const f = $('.insta-frame');
-        if (f && d && d.type === 'MEASURE' && d.details && d.details.height) f.style.height = d.details.height + 'px';
-      } catch (_) {}
-    });
+  // Instagram-style slider: slides are picked up from assets/insta/slide-1.jpg, slide-2.jpg, ...
+  const igc = $('#igc');
+  if (igc) {
+    const track = $('#igc-track'), view = $('#igc-view'), dotsEl = $('#igc-dots');
+    const prevBtn = $('#igc-prev'), nextBtn = $('#igc-next'), countEl = $('#igc-count');
+    const exts = ['jpg', 'jpeg', 'png', 'webp'];
+    const probe = src => new Promise(res => { const i = new Image(); i.onload = () => res(i); i.onerror = () => res(null); i.src = src; });
+    const findSlide = async (dir, n) => {
+      for (const e of exts) { const img = await probe(`${dir}/slide-${n}.${e}`); if (img) return img; }
+      return null;
+    };
+    const collect = async dir => {
+      const found = [];
+      for (let n = 1; n <= 12; n++) { const img = await findSlide(dir, n); if (!img) break; found.push(img); }
+      return found;
+    };
+    let slides = [], idx = 0;
+    const go = i => {
+      const t = Math.max(0, Math.min(slides.length - 1, i));
+      track.scrollTo({ left: t * track.clientWidth, behavior: reduce ? 'auto' : 'smooth' });
+    };
+    const sync = () => {
+      idx = Math.round(track.scrollLeft / Math.max(1, track.clientWidth));
+      $$('button', dotsEl).forEach((d, i) => d.classList.toggle('on', i === idx));
+      countEl.textContent = `${idx + 1}/${slides.length}`;
+      prevBtn.hidden = idx <= 0;
+      nextBtn.hidden = idx >= slides.length - 1;
+    };
+    const build = list => {
+      if (!list.length) return;
+      slides = list;
+      slides.forEach((s, i) => {
+        const img = document.createElement('img');
+        img.src = s.src; img.alt = `Beitrag von llk.management, Bild ${i + 1} von ${slides.length}`;
+        img.draggable = false;
+        track.appendChild(img);
+      });
+      // Like Instagram: the frame follows the first image, between 4:5 and 1.91:1
+      const r = Math.min(1.91, Math.max(.8, slides[0].naturalWidth / slides[0].naturalHeight));
+      view.style.setProperty('--igar', r.toFixed(4));
+      if (slides.length > 1) {
+        slides.forEach((_, i) => {
+          const b = document.createElement('button');
+          b.type = 'button'; b.setAttribute('aria-label', `Bild ${i + 1}`);
+          b.addEventListener('click', () => go(i));
+          dotsEl.appendChild(b);
+        });
+        prevBtn.addEventListener('click', () => go(idx - 1));
+        nextBtn.addEventListener('click', () => go(idx + 1));
+        track.addEventListener('scroll', () => requestAnimationFrame(sync), { passive: true });
+        igc.addEventListener('keydown', e => {
+          if (e.key === 'ArrowRight') { e.preventDefault(); go(idx + 1); }
+          if (e.key === 'ArrowLeft') { e.preventDefault(); go(idx - 1); }
+        });
+        // Mouse drag (touch and trackpad already scroll natively)
+        let down = false, sx = 0, sl = 0, moved = 0;
+        track.addEventListener('pointerdown', e => {
+          if (e.pointerType !== 'mouse') return;
+          down = true; moved = 0; sx = e.clientX; sl = track.scrollLeft;
+          track.classList.add('drag'); track.setPointerCapture(e.pointerId);
+        });
+        track.addEventListener('pointermove', e => {
+          if (!down) return;
+          moved = e.clientX - sx; track.scrollLeft = sl - moved;
+        });
+        const end = e => {
+          if (!down) return;
+          down = false; track.classList.remove('drag');
+          const w = track.clientWidth;
+          let target = Math.round(track.scrollLeft / w);
+          if (Math.abs(moved) > 40) target = moved < 0 ? Math.ceil(sl / w + .01) : Math.floor(sl / w - .01);
+          go(target);
+        };
+        track.addEventListener('pointerup', end);
+        track.addEventListener('pointercancel', end);
+        addEventListener('resize', () => go(idx));
+      } else {
+        prevBtn.hidden = nextBtn.hidden = true; countEl.hidden = true; dotsEl.hidden = true;
+      }
+      igc.hidden = false;
+      sync();
+    };
+    (async () => {
+      let list = await collect('assets/insta');
+      if (!list.length) list = await collect('assets/insta-demo');
+      build(list);
+    })();
   }
 
   // Mobile nav

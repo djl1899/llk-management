@@ -1,0 +1,10 @@
+Hier kommen die Bilder fuer den Instagram-Slider auf der Website hinein.
+
+Dateinamen: slide-1.jpg, slide-2.jpg, slide-3.jpg ... (bis zu 12 Bilder)
+Erlaubte Endungen: .jpg, .jpeg, .png, .webp
+
+Die Reihenfolge ergibt sich aus der Nummer. Die Seite nimmt automatisch alle Bilder,
+die lueckenlos nummeriert sind. Fehlt zum Beispiel slide-3, werden nur slide-1 und slide-2 gezeigt.
+
+Solange in diesem Ordner kein slide-1.* liegt, zeigt die Seite die Beispiel-Bilder aus assets/insta-demo.
+Das Bildformat des ersten Bildes bestimmt den Rahmen (4:5 hoch bis 1,91:1 quer).
