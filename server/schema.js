@@ -1,0 +1,711 @@
+import { q, tx } from './db.js';
+
+// Versioniertes Schema. Neue Migrationen als weiteres Element anhängen – niemals bestehende ändern.
+const MIGRATIONS = [
+  // 1: Grundschema
+  [
+    `create table if not exists app_meta (
+      key text primary key,
+      value text not null
+    )`,
+    `create table if not exists users (
+      id serial primary key,
+      name text not null,
+      email text not null,
+      password_hash text not null,
+      role text not null default 'manager',
+      is_active boolean not null default true,
+      token_version integer not null default 0,
+      last_login_at timestamptz,
+      created_at timestamptz not null default now(),
+      updated_at timestamptz not null default now()
+    )`,
+    `create unique index if not exists users_email_uq on users (lower(email))`,
+
+    `create table if not exists creators (
+      id serial primary key,
+      display_name text not null,
+      first_name text,
+      last_name text,
+      email text,
+      phone text,
+      city text,
+      region text,
+      country text,
+      language text,
+      niche text,
+      interests text,
+      notes text,
+      avatar_key text,
+      manager_id integer references users(id) on delete set null,
+      status text not null default 'Lead',
+      outreach_status text not null default 'Noch nicht kontaktiert',
+      contacted boolean not null default false,
+      created_by integer references users(id) on delete set null,
+      created_at timestamptz not null default now(),
+      updated_at timestamptz not null default now(),
+      last_activity_at timestamptz not null default now()
+    )`,
+    `create index if not exists creators_status_idx on creators (status)`,
+    `create index if not exists creators_manager_idx on creators (manager_id)`,
+    `create index if not exists creators_last_activity_idx on creators (last_activity_at desc)`,
+    `create index if not exists creators_created_idx on creators (created_at desc)`,
+    `create index if not exists creators_name_idx on creators (lower(display_name))`,
+    `create index if not exists creators_country_idx on creators (lower(country))`,
+    `create index if not exists creators_region_idx on creators (lower(region))`,
+
+    `create table if not exists social_accounts (
+      id serial primary key,
+      creator_id integer not null references creators(id) on delete cascade,
+      platform text not null,
+      username text,
+      url text,
+      followers integer,
+      engagement_rate numeric(6,2),
+      notes text,
+      updated_at timestamptz not null default now(),
+      unique (creator_id, platform)
+    )`,
+    `create index if not exists social_platform_followers_idx on social_accounts (platform, followers)`,
+    `create index if not exists social_username_idx on social_accounts (lower(username))`,
+
+    `create table if not exists outreach_activities (
+      id serial primary key,
+      creator_id integer not null references creators(id) on delete cascade,
+      user_id integer references users(id) on delete set null,
+      occurred_at timestamptz not null default now(),
+      channel text not null,
+      subject text,
+      message text,
+      result text,
+      follow_up_date date,
+      follow_up_done boolean not null default false,
+      created_at timestamptz not null default now()
+    )`,
+    `create index if not exists outreach_creator_idx on outreach_activities (creator_id, occurred_at desc)`,
+    `create index if not exists outreach_followup_idx on outreach_activities (follow_up_date) where follow_up_done = false`,
+
+    `create table if not exists collaborations (
+      id serial primary key,
+      creator_id integer not null references creators(id) on delete cascade,
+      brand text not null,
+      campaign_name text,
+      start_date date,
+      end_date date,
+      status text not null default 'Anfrage',
+      platform text,
+      description text,
+      deliverables text,
+      deadline date,
+      fee numeric(12,2) not null default 0,
+      invoice_status text not null default 'Nicht erstellt',
+      notes text,
+      created_by integer references users(id) on delete set null,
+      created_at timestamptz not null default now(),
+      updated_at timestamptz not null default now()
+    )`,
+    `create index if not exists collab_creator_idx on collaborations (creator_id)`,
+    `create index if not exists collab_status_idx on collaborations (status)`,
+    `create index if not exists collab_deadline_idx on collaborations (deadline)`,
+
+    `create table if not exists tasks (
+      id serial primary key,
+      title text not null,
+      description text,
+      creator_id integer references creators(id) on delete cascade,
+      collaboration_id integer references collaborations(id) on delete set null,
+      assignee_id integer references users(id) on delete set null,
+      priority text not null default 'Normal',
+      status text not null default 'Offen',
+      due_date date,
+      completed_at timestamptz,
+      notes text,
+      created_by integer references users(id) on delete set null,
+      created_at timestamptz not null default now(),
+      updated_at timestamptz not null default now()
+    )`,
+    `create index if not exists tasks_status_due_idx on tasks (status, due_date)`,
+    `create index if not exists tasks_creator_idx on tasks (creator_id)`,
+    `create index if not exists tasks_assignee_idx on tasks (assignee_id)`,
+
+    `create table if not exists contracts (
+      id serial primary key,
+      creator_id integer not null unique references creators(id) on delete cascade,
+      status text not null default 'Kein Vertrag',
+      start_date date,
+      end_date date,
+      exclusivity text,
+      usage_rights text,
+      notice_period text,
+      notes text,
+      updated_by integer references users(id) on delete set null,
+      created_at timestamptz not null default now(),
+      updated_at timestamptz not null default now()
+    )`,
+
+    `create table if not exists documents (
+      id serial primary key,
+      creator_id integer not null references creators(id) on delete cascade,
+      collaboration_id integer references collaborations(id) on delete set null,
+      category text not null,
+      filename text not null,
+      mime_type text not null,
+      size_bytes integer not null,
+      blob_key text not null unique,
+      uploaded_by integer references users(id) on delete set null,
+      created_at timestamptz not null default now()
+    )`,
+    `create index if not exists documents_creator_idx on documents (creator_id, created_at desc)`,
+
+    `create table if not exists tags (
+      id serial primary key,
+      name text not null,
+      color text not null default 'gray',
+      created_at timestamptz not null default now()
+    )`,
+    `create unique index if not exists tags_name_uq on tags (lower(name))`,
+
+    `create table if not exists creator_tags (
+      creator_id integer not null references creators(id) on delete cascade,
+      tag_id integer not null references tags(id) on delete cascade,
+      primary key (creator_id, tag_id)
+    )`,
+    `create index if not exists creator_tags_tag_idx on creator_tags (tag_id)`,
+
+    `create table if not exists activities (
+      id serial primary key,
+      creator_id integer references creators(id) on delete cascade,
+      user_id integer references users(id) on delete set null,
+      entity_type text not null,
+      entity_id integer,
+      action text not null,
+      message text not null,
+      created_at timestamptz not null default now()
+    )`,
+    `create index if not exists activities_creator_idx on activities (creator_id, created_at desc)`,
+    `create index if not exists activities_created_idx on activities (created_at desc)`,
+
+    `create table if not exists login_attempts (
+      id serial primary key,
+      email text not null,
+      ip text,
+      success boolean not null,
+      created_at timestamptz not null default now()
+    )`,
+    `create index if not exists login_attempts_idx on login_attempts (lower(email), created_at desc)`,
+  ],
+  // 2: Ausgaben
+  [
+    `create table if not exists expenses (
+      id serial primary key,
+      expense_date date not null,
+      title text not null,
+      category text not null default 'Sonstiges',
+      amount numeric(12,2) not null,
+      paid_by integer references users(id) on delete set null,
+      creator_id integer references creators(id) on delete set null,
+      notes text,
+      created_by integer references users(id) on delete set null,
+      created_at timestamptz not null default now(),
+      updated_at timestamptz not null default now()
+    )`,
+    `create index if not exists expenses_date_idx on expenses (expense_date desc)`,
+    `create index if not exists expenses_category_idx on expenses (category)`,
+  ],
+  // 3: Media Produktion
+  [
+    `create table if not exists media_projects (
+      id serial primary key,
+      client_name text not null,
+      title text not null,
+      project_type text,
+      status text not null default 'Anfrage',
+      shoot_at timestamptz,
+      shoot_location text,
+      delivery_date date,
+      deliverables text,
+      price numeric(12,2) not null default 0,
+      invoice_status text not null default 'Nicht erstellt',
+      contact_name text,
+      contact_email text,
+      contact_phone text,
+      assignee_id integer references users(id) on delete set null,
+      creator_id integer references creators(id) on delete set null,
+      notes text,
+      created_by integer references users(id) on delete set null,
+      created_at timestamptz not null default now(),
+      updated_at timestamptz not null default now()
+    )`,
+    `create index if not exists media_status_idx on media_projects (status)`,
+    `create index if not exists media_shoot_idx on media_projects (shoot_at)`,
+    `create index if not exists media_delivery_idx on media_projects (delivery_date)`,
+  ],
+  // 4: Bereich "App" (Marktplatz-App) – komplett getrennt vom CRM
+  [
+    `create table if not exists app_influencers (
+      id serial primary key,
+      name text not null,
+      handle text,
+      platform text,
+      followers integer,
+      niche text,
+      city text,
+      email text,
+      status text not null default 'Interessent',
+      source text,
+      joined_at date,
+      notes text,
+      created_at timestamptz not null default now(),
+      updated_at timestamptz not null default now()
+    )`,
+    `create index if not exists app_influencers_status_idx on app_influencers (status)`,
+    `create table if not exists app_companies (
+      id serial primary key,
+      name text not null,
+      industry text,
+      website text,
+      contact_name text,
+      contact_email text,
+      status text not null default 'Lead',
+      monthly_budget numeric(12,2),
+      notes text,
+      created_at timestamptz not null default now(),
+      updated_at timestamptz not null default now()
+    )`,
+    `create index if not exists app_companies_status_idx on app_companies (status)`,
+    `create table if not exists app_campaigns (
+      id serial primary key,
+      company_id integer references app_companies(id) on delete set null,
+      name text not null,
+      status text not null default 'Entwurf',
+      budget numeric(12,2) not null default 0,
+      target_influencers integer,
+      target_niche text,
+      target_platform text,
+      max_followers integer,
+      start_date date,
+      end_date date,
+      goal text,
+      notes text,
+      created_at timestamptz not null default now(),
+      updated_at timestamptz not null default now()
+    )`,
+    `create table if not exists app_campaign_influencers (
+      id serial primary key,
+      campaign_id integer not null references app_campaigns(id) on delete cascade,
+      influencer_id integer not null references app_influencers(id) on delete cascade,
+      fee numeric(12,2) not null default 0,
+      status text not null default 'Angefragt',
+      created_at timestamptz not null default now(),
+      unique (campaign_id, influencer_id)
+    )`,
+    `create table if not exists app_roadmap (
+      id serial primary key,
+      title text not null,
+      description text,
+      area text,
+      status text not null default 'Idee',
+      priority text not null default 'Normal',
+      target_date date,
+      assignee_id integer references users(id) on delete set null,
+      done_at timestamptz,
+      created_at timestamptz not null default now(),
+      updated_at timestamptz not null default now()
+    )`,
+    `create table if not exists app_updates (
+      id serial primary key,
+      published_at date not null default current_date,
+      version text,
+      type text not null default 'Notiz',
+      title text not null,
+      body text,
+      author_id integer references users(id) on delete set null,
+      created_at timestamptz not null default now(),
+      updated_at timestamptz not null default now()
+    )`,
+  ],
+  // 5: Zwei-Faktor-Anmeldung
+  [
+    `alter table users add column if not exists totp_secret text`,
+    `alter table users add column if not exists totp_pending text`,
+    `alter table users add column if not exists totp_enabled boolean not null default false`,
+    `alter table users add column if not exists totp_last_step bigint`,
+    `alter table users add column if not exists totp_enabled_at timestamptz`,
+    `alter table users add column if not exists recovery_codes text[] not null default '{}'`,
+  ],
+  // 6: Provision, Nachrichten-Vorlagen, tägliche Mail
+  [
+    `alter table creators add column if not exists commission_rate numeric(5,2)`,
+    `alter table collaborations add column if not exists commission_rate numeric(5,2)`,
+    `alter table collaborations add column if not exists payout_status text not null default 'Offen'`,
+    `alter table users add column if not exists digest_enabled boolean not null default false`,
+    `alter table creators add column if not exists bio text`,
+    `insert into app_meta (key, value) values ('default_commission_rate', '20') on conflict (key) do nothing`,
+    `create or replace view collab_finance as
+      select co.id, co.creator_id, co.status, co.invoice_status, co.payout_status, co.fee,
+        coalesce(co.start_date, co.deadline, co.end_date, co.created_at::date) as rev_date,
+        coalesce(co.commission_rate, c.commission_rate,
+          (select value::numeric from app_meta where key = 'default_commission_rate'), 20) as rate,
+        round(co.fee * coalesce(co.commission_rate, c.commission_rate,
+          (select value::numeric from app_meta where key = 'default_commission_rate'), 20) / 100, 2) as agency_fee,
+        co.fee - round(co.fee * coalesce(co.commission_rate, c.commission_rate,
+          (select value::numeric from app_meta where key = 'default_commission_rate'), 20) / 100, 2) as payout
+      from collaborations co join creators c on c.id = co.creator_id`,
+    `create table if not exists message_templates (
+      id serial primary key,
+      name text not null,
+      channel text,
+      subject text,
+      body text not null,
+      created_by integer references users(id) on delete set null,
+      created_at timestamptz not null default now(),
+      updated_at timestamptz not null default now()
+    )`,
+  ],
+  // 7: Kleider- und Schuhgrößen
+  [
+    `alter table creators add column if not exists size_top text`,
+    `alter table creators add column if not exists size_bottom text`,
+    `alter table creators add column if not exists size_shoes text`,
+    `alter table creators add column if not exists height_cm integer`,
+    `alter table creators add column if not exists size_notes text`,
+  ],
+  // 8: Creator-Bereich (Login für Creator), Rechnungsdaten, Dokument-Freigabe, Content-Einreichung
+  [
+    `alter table users add column if not exists creator_id integer references creators(id) on delete set null`,
+    `create unique index if not exists users_creator_uq on users (creator_id) where creator_id is not null`,
+    `alter table users add column if not exists invite_token_hash text`,
+    `alter table users add column if not exists invite_expires_at timestamptz`,
+    `alter table creators add column if not exists billing_name text`,
+    `alter table creators add column if not exists billing_street text`,
+    `alter table creators add column if not exists billing_zip text`,
+    `alter table creators add column if not exists billing_city text`,
+    `alter table creators add column if not exists iban text`,
+    `alter table creators add column if not exists bank_holder text`,
+    `alter table creators add column if not exists tax_number text`,
+    `alter table creators add column if not exists vat_id text`,
+    `alter table creators add column if not exists small_business boolean`,
+    `alter table documents add column if not exists visible_to_creator boolean not null default false`,
+    `alter table collaborations add column if not exists content_links text`,
+    `alter table collaborations add column if not exists content_note text`,
+    `alter table collaborations add column if not exists content_submitted_at timestamptz`,
+  ],
+  // 9: Creator-Bereich 2.0 – Deal-Details, Nachrichten, Kalender, Ausgaben, Kontaktlisten
+  [
+    ...['contact_name text', 'contact_email text', 'usage_rights text', 'exclusivity text', 'briefing_date date', 'approval_date date',
+      'publish_date date', 'published_on date', 'invoice_due_date date', 'payout_date date']
+      .map((c) => `alter table collaborations add column if not exists ${c}`),
+    `alter table creators add column if not exists tax_buffer_rate numeric(5,2)`,
+    `create table if not exists collab_messages (
+      id serial primary key,
+      collaboration_id integer not null references collaborations(id) on delete cascade,
+      user_id integer references users(id) on delete set null,
+      body text not null,
+      created_at timestamptz not null default now()
+    )`,
+    `create index if not exists collab_messages_idx on collab_messages (collaboration_id, created_at)`,
+    `create table if not exists creator_calendar_entries (
+      id serial primary key,
+      creator_id integer not null references creators(id) on delete cascade,
+      collaboration_id integer references collaborations(id) on delete set null,
+      entry_date date not null,
+      entry_time text,
+      kind text not null default 'Content-Plan',
+      title text not null,
+      notes text,
+      platform text,
+      done boolean not null default false,
+      created_by integer references users(id) on delete set null,
+      created_at timestamptz not null default now(),
+      updated_at timestamptz not null default now()
+    )`,
+    `create index if not exists creator_calendar_idx on creator_calendar_entries (creator_id, entry_date)`,
+    `create table if not exists creator_expenses (
+      id serial primary key,
+      creator_id integer not null references creators(id) on delete cascade,
+      collaboration_id integer references collaborations(id) on delete set null,
+      expense_date date not null,
+      title text not null,
+      category text not null default 'Sonstiges',
+      amount_gross numeric(12,2) not null default 0,
+      vat_rate numeric(5,2) not null default 19,
+      reimbursable boolean not null default false,
+      reimbursement_status text not null default 'Keine',
+      document_id integer references documents(id) on delete set null,
+      notes text,
+      created_by integer references users(id) on delete set null,
+      created_at timestamptz not null default now(),
+      updated_at timestamptz not null default now()
+    )`,
+    `create index if not exists creator_expenses_idx on creator_expenses (creator_id, expense_date)`,
+    `create table if not exists contact_lists (
+      id serial primary key,
+      name text not null,
+      description text,
+      color text not null default 'blue',
+      created_by integer references users(id) on delete set null,
+      created_at timestamptz not null default now(),
+      updated_at timestamptz not null default now()
+    )`,
+    `create table if not exists list_contacts (
+      id serial primary key,
+      list_id integer not null references contact_lists(id) on delete cascade,
+      company text,
+      name text,
+      position text,
+      email text,
+      phone text,
+      website text,
+      instagram text,
+      city text,
+      status text not null default 'Neu',
+      notes text,
+      last_contacted_on date,
+      created_by integer references users(id) on delete set null,
+      created_at timestamptz not null default now(),
+      updated_at timestamptz not null default now()
+    )`,
+    `create index if not exists list_contacts_idx on list_contacts (list_id)`,
+  ],
+  // 10: Team-Kalender – Termine fürs Team, mehrere Teilnehmer pro Termin
+  [
+    `create table if not exists team_events (
+      id serial primary key,
+      title text not null,
+      kind text not null default 'Termin',
+      starts_at timestamptz not null,
+      ends_at timestamptz not null,
+      all_day boolean not null default false,
+      location text,
+      notes text,
+      creator_id integer references creators(id) on delete set null,
+      collaboration_id integer references collaborations(id) on delete set null,
+      created_by integer references users(id) on delete set null,
+      created_at timestamptz not null default now(),
+      updated_at timestamptz not null default now()
+    )`,
+    `create index if not exists team_events_range_idx on team_events (starts_at, ends_at)`,
+    `create table if not exists team_event_attendees (
+      event_id integer not null references team_events(id) on delete cascade,
+      user_id integer not null references users(id) on delete cascade,
+      primary key (event_id, user_id)
+    )`,
+    `create index if not exists team_event_attendees_user_idx on team_event_attendees (user_id)`,
+  ],
+  // 11: Aufgaben auf drei Status reduziert; "Wartet auf Creator" wird zum Merkmal "für Creator sichtbar"
+  [
+    `alter table tasks add column if not exists for_creator boolean not null default false`,
+    `update tasks set for_creator = true, status = 'Offen' where status = 'Wartet auf Creator'`,
+    `update tasks set status = 'Erledigt', completed_at = coalesce(completed_at, updated_at) where status = 'Abgebrochen'`,
+    `update tasks set status = 'Offen' where status not in ('Offen', 'In Bearbeitung', 'Erledigt')`,
+  ],
+  // 12: Media-Produktion – Dreh mit Ende (Datum + Uhrzeit), auch über mehrere Tage
+  [
+    `alter table media_projects add column if not exists shoot_end_at timestamptz`,
+    `update media_projects set shoot_end_at = shoot_at + interval '2 hours' where shoot_at is not null and shoot_end_at is null`,
+  ],
+  // 13: Mehrere Teammitglieder je Creator (Manager), Aufgabe und Media-Projekt (Verantwortliche).
+  //     Das alte Einzelfeld bleibt per Trigger = erste Person der Liste.
+  [
+    `alter table creators add column if not exists manager_ids integer[] not null default '{}'`,
+    `update creators set manager_ids = array[manager_id] where manager_id is not null and cardinality(manager_ids) = 0`,
+    `create or replace function sync_creators_manager_ids() returns trigger language plpgsql as $f$
+     begin
+       if new.manager_ids is null then new.manager_ids := '{}'; end if;
+       if tg_op = 'UPDATE' and new.manager_id is distinct from old.manager_id and new.manager_ids = old.manager_ids then
+         new.manager_ids := case when new.manager_id is null then '{}'::integer[] else array[new.manager_id] end;
+       elsif tg_op = 'INSERT' and cardinality(new.manager_ids) = 0 and new.manager_id is not null then
+         new.manager_ids := array[new.manager_id];
+       end if;
+       new.manager_id := new.manager_ids[1];
+       return new;
+     end $f$`,
+    `drop trigger if exists sync_creators_manager_ids_trg on creators`,
+    `create trigger sync_creators_manager_ids_trg before insert or update on creators for each row execute function sync_creators_manager_ids()`,
+    `alter table tasks add column if not exists assignee_ids integer[] not null default '{}'`,
+    `update tasks set assignee_ids = array[assignee_id] where assignee_id is not null and cardinality(assignee_ids) = 0`,
+    `create or replace function sync_tasks_assignee_ids() returns trigger language plpgsql as $f$
+     begin
+       if new.assignee_ids is null then new.assignee_ids := '{}'; end if;
+       if tg_op = 'UPDATE' and new.assignee_id is distinct from old.assignee_id and new.assignee_ids = old.assignee_ids then
+         new.assignee_ids := case when new.assignee_id is null then '{}'::integer[] else array[new.assignee_id] end;
+       elsif tg_op = 'INSERT' and cardinality(new.assignee_ids) = 0 and new.assignee_id is not null then
+         new.assignee_ids := array[new.assignee_id];
+       end if;
+       new.assignee_id := new.assignee_ids[1];
+       return new;
+     end $f$`,
+    `drop trigger if exists sync_tasks_assignee_ids_trg on tasks`,
+    `create trigger sync_tasks_assignee_ids_trg before insert or update on tasks for each row execute function sync_tasks_assignee_ids()`,
+    `alter table media_projects add column if not exists assignee_ids integer[] not null default '{}'`,
+    `update media_projects set assignee_ids = array[assignee_id] where assignee_id is not null and cardinality(assignee_ids) = 0`,
+    `create or replace function sync_media_projects_assignee_ids() returns trigger language plpgsql as $f$
+     begin
+       if new.assignee_ids is null then new.assignee_ids := '{}'; end if;
+       if tg_op = 'UPDATE' and new.assignee_id is distinct from old.assignee_id and new.assignee_ids = old.assignee_ids then
+         new.assignee_ids := case when new.assignee_id is null then '{}'::integer[] else array[new.assignee_id] end;
+       elsif tg_op = 'INSERT' and cardinality(new.assignee_ids) = 0 and new.assignee_id is not null then
+         new.assignee_ids := array[new.assignee_id];
+       end if;
+       new.assignee_id := new.assignee_ids[1];
+       return new;
+     end $f$`,
+    `drop trigger if exists sync_media_projects_assignee_ids_trg on media_projects`,
+    `create trigger sync_media_projects_assignee_ids_trg before insert or update on media_projects for each row execute function sync_media_projects_assignee_ids()`,
+  ],
+  // 14: Karte – Koordinaten, Orts-Cache, Kategorie/Adresse für Listen-Kontakte
+  [
+    `create table if not exists geo_places (
+      key text primary key,
+      query text,
+      label text,
+      lat double precision,
+      lng double precision,
+      source text not null default 'osm',
+      created_at timestamptz not null default now()
+    )`,
+    `alter table creators add column if not exists lat double precision`,
+    `alter table creators add column if not exists lng double precision`,
+    `alter table list_contacts add column if not exists category text`,
+    `alter table list_contacts add column if not exists industry text`,
+    `alter table list_contacts add column if not exists address text`,
+    `alter table list_contacts add column if not exists lat double precision`,
+    `alter table list_contacts add column if not exists lng double precision`,
+  ],
+  // 15: Follower-Verlauf (Stand mit Datum) und automatische Aktualisierung
+  [
+    `alter table social_accounts add column if not exists followers_at timestamptz`,
+    `alter table social_accounts add column if not exists followers_source text`,
+    `alter table social_accounts add column if not exists sync_status text`,
+    `alter table social_accounts add column if not exists sync_checked_at timestamptz`,
+    `update social_accounts set followers_at = updated_at, followers_source = 'manuell' where followers is not null and followers_at is null`,
+    `create table if not exists follower_snapshots (
+      id serial primary key,
+      social_account_id integer not null references social_accounts(id) on delete cascade,
+      creator_id integer not null references creators(id) on delete cascade,
+      platform text not null,
+      followers integer not null,
+      recorded_on date not null,
+      recorded_at timestamptz not null default now(),
+      source text not null default 'manuell',
+      created_by integer references users(id) on delete set null,
+      unique (social_account_id, recorded_on)
+    )`,
+    `create index if not exists follower_snapshots_creator_idx on follower_snapshots (creator_id, platform, recorded_on desc)`,
+    `insert into follower_snapshots (social_account_id, creator_id, platform, followers, recorded_on, recorded_at, source)
+       select id, creator_id, platform, followers, (updated_at at time zone 'Europe/Berlin')::date, updated_at, 'manuell'
+       from social_accounts where followers is not null
+       on conflict (social_account_id, recorded_on) do nothing`,
+    `create table if not exists follower_sync_runs (
+      id serial primary key,
+      platform text not null,
+      provider text not null default 'apify',
+      provider_run_id text,
+      status text not null default 'läuft',
+      trigger text not null default 'manuell',
+      requested integer not null default 0,
+      updated integer not null default 0,
+      not_found integer not null default 0,
+      error text,
+      created_by integer references users(id) on delete set null,
+      started_at timestamptz not null default now(),
+      finished_at timestamptz
+    )`,
+    `create index if not exists follower_sync_runs_started_idx on follower_sync_runs (started_at desc)`,
+  ],
+  // 16: Speicheranzeige – Größe der Profilbilder merken
+  [
+    `alter table creators add column if not exists avatar_size integer`,
+  ],
+  // 17: Media-Projekte – Firmen aus den Listen zuordnen (mehrere je Projekt)
+  [
+    `create table if not exists media_project_companies (
+      media_project_id integer not null references media_projects(id) on delete cascade,
+      list_contact_id integer not null references list_contacts(id) on delete cascade,
+      created_at timestamptz not null default now(),
+      primary key (media_project_id, list_contact_id)
+    )`,
+    `create index if not exists media_project_companies_contact_idx on media_project_companies (list_contact_id)`,
+  ],
+  // 18: Aufgaben → Gründung: Checkliste zur UG-Gründung (Startinhalt = Excel-Checkliste)
+  [
+    `create table if not exists founding_items (
+      id serial primary key,
+      sort integer not null default 0,
+      phase text not null default '',
+      title text not null,
+      who text,
+      due_text text,
+      status text not null default 'Offen',
+      notes text,
+      completed_at timestamptz,
+      updated_by integer references users(id) on delete set null,
+      created_at timestamptz not null default now(),
+      updated_at timestamptz not null default now()
+    )`,
+    `create index if not exists founding_items_sort_idx on founding_items (sort, id)`,
+    `insert into founding_items (sort, phase, title, who, due_text, status, notes)
+     select * from (values
+       (1, '1 · Gründung', 'Gesellschaftsvertrag beim Notar beurkunden', 'Alle', '10.11.2026', 'Erledigt', 'Gesellschaftsvertrag bzw. Musterprotokoll, Gesellschafterliste und Handelsregister-Anmeldung unterschrieben.'),
+       (2, '1 · Gründung', 'Beim Notar nachfragen: Welchen Einzahlungsnachweis braucht er und wohin schicken?', 'David', 'diese Woche', 'Offen', 'Der Notar reicht die Anmeldung beim Handelsregister erst ein, wenn das Stammkapital nachweislich eingezahlt ist.'),
+       (3, '1 · Gründung', 'Transparenzregister: wirtschaftlich Berechtigte eintragen', 'David', 'vor der Kontoeröffnung', 'Offen', 'Auf transparenzregister.de. Eingetragen wird jeder mit mehr als 25 % Anteil, also ihr alle drei. Viele Banken verlangen den Eintrag bei der Kontoeröffnung.'),
+       (4, '1 · Gründung', 'Geschäftskonto für die „LLK Management UG (haftungsbeschränkt) i.G.“ eröffnen', 'David', 'diese Woche', 'Offen', 'Vorher fragen, ob die Bank Konten für Gesellschaften in Gründung anbietet. Typische Unterlagen: notarielle Urkunde, Gesellschafterliste, Ausweis des Geschäftsführers, Auszug aus dem Transparenzregister. Gesellschafter müssen sich teils auch legitimieren.'),
+       (5, '1 · Gründung', 'Stammeinlage einzahlen, jeder von seinem eigenen Konto', 'David, Joshua, Anton', 'direkt nach der Kontoeröffnung', 'Offen', 'Jeder zahlt seinen Anteil laut Vertrag (40/40/20) vollständig und in Geld ein, bei der UG sind Sacheinlagen nicht erlaubt. Verwendungszweck z. B. „Stammeinlage [Name] LLK Management UG i.G.“. Das Geld nicht abheben oder privat nutzen.'),
+       (6, '1 · Gründung', 'Einzahlungsnachweis an den Notar schicken', 'David', 'sobald alle eingezahlt haben', 'Offen', 'Kontoauszug oder Bankbestätigung, auf dem alle drei Einzahlungen zu sehen sind.'),
+       (7, '1 · Gründung', 'Notar reicht die Anmeldung beim Handelsregister ein', 'Notar', 'nach Einzahlungsnachweis', 'Offen', 'Die Eintragung dauert meist ein bis drei Wochen, je nach Registergericht. Danach bekommt ihr die HRB-Nummer.'),
+       (8, '1 · Gründung', 'Bis zur Eintragung: nur als „UG (haftungsbeschränkt) i.G.“ unterschreiben', 'David', 'ab sofort', 'Offen', 'Vor der Eintragung haftest du als Handelnder persönlich. Größere Verträge möglichst erst nach der Eintragung abschließen.'),
+       (9, '2 · Behörden', 'Fragebogen zur steuerlichen Erfassung über ELSTER einreichen', 'David', 'bis ca. 10.12.2026', 'Offen', 'Vorher klären: Kleinunternehmer oder Regelbesteuerung (bei Regelbesteuerung 5 Jahre Bindung). Die USt-IdNr. direkt mit beantragen. Die Steuernummer kommt per Post.'),
+       (10, '2 · Behörden', 'Gewerbe beim Gewerbeamt am Firmensitz anmelden', 'David', 'nach der Eintragung ins Handelsregister', 'Offen', 'Online oder vor Ort, mit Handelsregisterauszug und Ausweis. Das Gewerbeamt informiert automatisch Finanzamt, IHK und Berufsgenossenschaft.'),
+       (11, '2 · Behörden', 'Bei der Berufsgenossenschaft anmelden (für Agenturen meist die VBG)', 'David', 'innerhalb 1 Woche nach Start', 'Offen', 'Das ist für jedes Unternehmen Pflicht, auch ohne Mitarbeiter.'),
+       (12, '2 · Behörden', 'Post von der IHK abwarten', '–', 'kommt automatisch', 'Offen', 'Die Mitgliedschaft ist Pflicht. Der Beitrag richtet sich nach dem Gewinn.'),
+       (13, '2 · Behörden', 'Rundfunkbeitrag: Betriebsstätte prüfen', 'David', 'wenn Post vom Beitragsservice kommt', 'Offen', 'Für eine Betriebsstätte in einer privaten Wohnung, für die schon Rundfunkbeitrag gezahlt wird, fällt kein extra Beitrag an. Darauf hinweisen.'),
+       (14, '2 · Behörden', 'Vorsicht bei Fake-Rechnungen nach der Eintragung', 'Alle', 'nach der Eintragung', 'Offen', 'Es kommen oft Schreiben, die wie amtliche Rechnungen aussehen („Handelsregister“, „Gewerbeverzeichnis“). Echte Kosten kommen nur vom Notar, vom Amtsgericht bzw. der Justizkasse und vom Transparenzregister.'),
+       (15, '3 · Intern', 'Steuerberater suchen und Erstgespräch führen', 'Alle', 'vor dem Steuer-Fragebogen', 'Offen', 'Themen: Umsatzsteuer, Geschäftsführer-Gehalt, Sozialversicherung, Buchhaltung, Jahresabschluss.'),
+       (16, '3 · Intern', 'Geschäftsführer-Anstellungsvertrag aufsetzen und per Gesellschafterbeschluss bestätigen', 'Alle', 'nach dem Steuerberater-Gespräch', 'Offen', 'Er ist die Grundlage für ein Geschäftsführer-Gehalt und steuerfreie Benefits (Diensthandy, Internetpauschale usw.).'),
+       (17, '3 · Intern', 'Statusfeststellung Sozialversicherung (Clearingstelle der DRV)', 'David', 'zusammen mit dem GF-Vertrag', 'Offen', 'Mit 40 % ohne Sperrminorität bist du meistens sozialversicherungspflichtig. Das schriftlich klären lassen.'),
+       (18, '3 · Intern', 'Notar- und Gerichtskosten vom Geschäftskonto bezahlen', 'David', 'wenn die Rechnungen kommen', 'Offen', 'Gründungskosten sind Betriebsausgaben der UG. Hat jemand privat vorgestreckt, mit Beleg von der UG erstatten lassen.'),
+       (19, '3 · Intern', 'Briefkasten und Klingel mit dem Firmennamen beschriften', 'David', 'diese Woche', 'Offen', 'Der Firmensitz ist deine Adresse, Post muss also zugestellt werden können. Wohnst du zur Miete, prüfen, ob der Vermieter einverstanden ist.'),
+       (20, '3 · Intern', 'Buchhaltung einrichten und Belege ab Tag 1 sammeln', 'David', 'ab sofort', 'Offen', 'Alle Rechnungen auf den Namen der UG ausstellen lassen. Privates und Geschäftliches strikt trennen.'),
+       (21, '3 · Intern', 'Impressum auf Website und Social-Media-Profilen anlegen', 'David', 'nach der Eintragung', 'Offen', 'Firma, Anschrift, Geschäftsführer, Registergericht mit HRB-Nummer und ggf. die USt-IdNr.'),
+       (22, '3 · Intern', 'Arbeitgeber die Infos zur UG-Gründung geben', 'David', 'nach der Eintragung', 'Offen', 'Zum Beispiel Handelsregisterauszug und deine Rolle als Geschäftsführer.')
+     ) as v(sort, phase, title, who, due_text, status, notes)
+     where not exists (select 1 from founding_items)`,
+    `update founding_items set completed_at = now() where status = 'Erledigt' and completed_at is null`,
+  ],
+];
+
+export const SCHEMA_VERSION = MIGRATIONS.length;
+let ensured = false;
+
+export async function ensureSchema() {
+  if (ensured) return;
+  let current = 0;
+  try {
+    const rows = await q(`select value from app_meta where key = 'schema_version'`);
+    current = rows[0] ? Number(rows[0].value) : 0;
+  } catch {
+    current = 0; // Tabelle existiert noch nicht
+  }
+  if (current < SCHEMA_VERSION) {
+    await tx(async (run) => {
+      await run(`select pg_advisory_xact_lock(918273645)`);
+      let v = 0;
+      try {
+        await run(`create table if not exists app_meta (key text primary key, value text not null)`);
+        const r = await run(`select value from app_meta where key = 'schema_version'`);
+        v = r[0] ? Number(r[0].value) : 0;
+      } catch {
+        v = 0;
+      }
+      for (let i = v; i < MIGRATIONS.length; i++) {
+        for (const stmt of MIGRATIONS[i]) await run(stmt);
+      }
+      await run(
+        `insert into app_meta (key, value) values ('schema_version', $1)
+         on conflict (key) do update set value = excluded.value`,
+        [String(SCHEMA_VERSION)]
+      );
+    });
+  }
+  ensured = true;
+}
