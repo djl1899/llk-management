@@ -302,7 +302,7 @@ footer{background:var(--ink);color:#fff;padding:60px var(--pad) 0;overflow:hidde
   .intro,.ct-grid,.m-grid{grid-template-columns:1fr}
   .m-insta{justify-self:start;max-width:520px}
   .cgrid{grid-template-columns:1fr 1fr}
-  .cgrid .c-grow{grid-column:1/-1}
+  .cgrid .c-lead:nth-child(3){grid-column:1/-1}
   .f-grid{grid-template-columns:1fr 1fr}
   .pane{grid-template-columns:1fr}
   .p-side{position:static}
@@ -490,12 +490,12 @@ footer{background:var(--ink);color:#fff;padding:60px var(--pad) 0;overflow:hidde
         <div class="c-meta"><span>@mariella.090</span><span class="f">40K Follower</span></div>
       </div>
     </a>
-    <a class="ccard c-grow tilt rv d2" href="mailto:kontakt@llk-management.com?subject=Bewerbung%20als%20Creator">
-      <div class="c-top"><span class="plus">+</span><span class="eyebrow" style="color:#fff">Wir wachsen</span></div>
+    <a class="ccard c-lead tilt rv d2" href="https://www.instagram.com/loulou_fbl/" target="_blank" rel="noopener" aria-label="Loulou auf Instagram ansehen">
+      <img id="img-loulou" src="assets/Loulou.jpeg" alt="" loading="lazy">
+      <div class="c-top"><span class="n">03</span><span class="pill" style="font-size:12px;padding:7px 12px">Profil ansehen</span></div>
       <div>
-        <h3>Dein Gesicht hier?</h3>
-        <p>Wir nehmen laufend neue Creator auf. Die Followerzahl entscheidet nicht.</p>
-        <div class="for"><span><small>Für Creator</small>Jetzt bewerben</span><span class="round"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12 12 4M5 4h7v7"/></svg></span></div>
+        <div class="c-name">Loulou</div>
+        <div class="c-meta"><span>@loulou_fbl</span><span class="f">80K Follower</span></div>
       </div>
     </a>
   </div>
@@ -635,16 +635,20 @@ footer{background:var(--ink);color:#fff;padding:60px var(--pad) 0;overflow:hidde
   }), { threshold: .15, rootMargin: '0px 0px -40px 0px' });
   $$('.rv').forEach(el => io.observe(el));
 
-  // Mariella's photo: try the likely upload locations and spellings in order
-  const mImg = $('#img-mariella');
-  if (mImg) {
-    const tries = ['mariella.jpeg', 'Mariella.jpeg', 'mariella.jpg', 'Mariella.jpg', 'mariella.png', 'Mariella.png'];
+  // Creator photos: try the likely upload locations and spellings in order
+  const photoFallback = (img, name) => {
+    if (!img) return;
+    const cap = name[0].toUpperCase() + name.slice(1);
+    const tries = [];
+    [name, cap].forEach(n => ['jpeg', 'jpg', 'png', 'webp'].forEach(e => tries.push(`${n}.${e}`)));
     const candidates = [];
     tries.forEach(f => { candidates.push('assets/' + f); candidates.push(f); });
     let ci = 0;
-    mImg.addEventListener('error', () => { ci += 1; if (ci < candidates.length) mImg.src = candidates[ci]; });
-    mImg.src = candidates[0];
-  }
+    img.addEventListener('error', () => { ci += 1; if (ci < candidates.length) img.src = candidates[ci]; });
+    img.src = candidates[0];
+  };
+  photoFallback($('#img-mariella'), 'mariella');
+  photoFallback($('#img-loulou'), 'loulou');
 
   // Instagram-style slider: slides are picked up from assets/insta/slide-1.jpg, slide-2.jpg, ...
   const igc = $('#igc');
